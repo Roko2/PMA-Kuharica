@@ -89,10 +89,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
-            Toast.makeText(this, "Uspješna prijava!", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Succesfully logged in!", Toast.LENGTH_LONG).show()
             startActivity(Intent(this, MainActivity::class.java))
         } else {
-            Toast.makeText(this, "Niste prijavljeni!", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Signed out!", Toast.LENGTH_LONG).show()
         }
     }
 
