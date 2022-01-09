@@ -1,0 +1,3 @@
+package com.example.pma_kuharica.interfaces
+
+interface IngredientInterface
