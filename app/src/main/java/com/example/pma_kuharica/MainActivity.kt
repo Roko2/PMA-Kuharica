@@ -3,24 +3,16 @@ package com.example.pma_kuharica
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils.replace
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.SearchEvent
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import android.widget.SearchView
-import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.Toolbar;
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.pma_kuharica.adapters.ScreenSlidePagerAdapter
-import com.example.pma_kuharica.fragments.HomeFragment
-import com.example.pma_kuharica.fragments.InfoFragment
-import com.example.pma_kuharica.fragments.IngredientFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -29,7 +21,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import com.example.pma_kuharica.fragments.HomeFragment
+import com.example.pma_kuharica.fragments.SearchFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -45,7 +41,6 @@ class MainActivity : AppCompatActivity() {
         mAdapter = ScreenSlidePagerAdapter(this)
         mPager = findViewById<View>(R.id.mainViewPager) as ViewPager2
         mPager!!.setAdapter(mAdapter)
-
         bottomNavigation.setOnItemSelectedListener{menuItem ->
         when (menuItem.itemId) {
             R.id.homePage -> {
@@ -63,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         }
         true
         }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu) : Boolean {
@@ -75,20 +71,21 @@ class MainActivity : AppCompatActivity() {
 
         val queryTextListener: SearchView.OnQueryTextListener =
             object : SearchView.OnQueryTextListener {
-                override fun onQueryTextChange(newText: String): Boolean {
-                    // This is your adapter that will be filtered
-                    Toast.makeText(applicationContext, "textChanged :$newText", Toast.LENGTH_LONG)
-                        .show()
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    findViewById<ViewPager2>(R.id.mainViewPager).setBackgroundResource(R.color.fui_transparent)
+                    val searchFragment:SearchFragment= SearchFragment()
+                    val transaction:FragmentTransaction=supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragmentContainerView,searchFragment)
+                    transaction.addToBackStack(null)
+                    transaction.commit()
                     return true
                 }
 
-                override fun onQueryTextSubmit(query: String): Boolean {
-                    // **Here you can get the value "query" which is entered in the search box.**
-                    Toast.makeText(applicationContext, "searchvalue :$query", Toast.LENGTH_LONG)
-                        .show()
-                    return true
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return false
                 }
             }
+        searchView.setOnQueryTextListener(queryTextListener);
         return true;
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -121,4 +118,5 @@ class MainActivity : AppCompatActivity() {
         startActivity(a)
     }
 }
+
 

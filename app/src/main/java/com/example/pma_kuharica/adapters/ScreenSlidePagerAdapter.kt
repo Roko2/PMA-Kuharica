@@ -10,6 +10,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.pma_kuharica.classes.Ingredient
 import com.example.pma_kuharica.fragments.InfoFragment
 import com.example.pma_kuharica.fragments.IngredientFragment
+import com.example.pma_kuharica.fragments.SearchFragment
 
 private const val NUM_PAGES = 3
 
