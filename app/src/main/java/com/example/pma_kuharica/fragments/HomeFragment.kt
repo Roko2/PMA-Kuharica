@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.annotation.NonNull
@@ -23,9 +24,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HomeFragment : Fragment(), Callback<HintsResults> {
+class HomeFragment : Fragment() {
     var homeListener: HomeInterface? = null
-    lateinit var hintData: HintsResults
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -51,16 +51,8 @@ class HomeFragment : Fragment(), Callback<HintsResults> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ApiManager.getNewInstance()?.service()?.getFood("/api/food-database/v2/parser?app_id=0fe8f86d&app_key=875e22c3d3ec38bd2453e0223a451f16&ingr=bread")?.enqueue(this)
-    }
-
-    override fun onResponse(@NonNull call: Call<HintsResults>,@NonNull response: Response<HintsResults>) {
-        if (response.isSuccessful && response.body() != null) {
-            hintData = response.body()!!
-        }
-    }
-
-    override fun onFailure(call: Call<HintsResults>, t: Throwable) {
-        t.printStackTrace()
+        val headerImage=view.findViewById<ImageView>(R.id.imageView)
+        headerImage.adjustViewBounds = true
+        headerImage.scaleType = ImageView.ScaleType.CENTER_CROP
     }
 }

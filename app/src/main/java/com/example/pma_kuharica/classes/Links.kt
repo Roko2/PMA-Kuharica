@@ -1,5 +1,8 @@
 package com.example.pma_kuharica.classes
 
+import com.google.gson.annotations.SerializedName
+
 data class Links(
-    val next: Next
+    @SerializedName("next")
+    val next: Next?=null
 )

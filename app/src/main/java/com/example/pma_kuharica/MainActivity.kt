@@ -4,15 +4,17 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils.replace
-import android.view.Menu
-import android.view.MenuItem
-import android.view.SearchEvent
-import android.view.View
+import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager2.widget.ViewPager2
-import com.example.pma_kuharica.adapters.ScreenSlidePagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import com.example.pma_kuharica.api.ApiManager
+import com.example.pma_kuharica.classes.HintsResults
+import com.example.pma_kuharica.classes.Ingredient
+import com.example.pma_kuharica.fragments.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -20,45 +22,53 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import com.example.pma_kuharica.fragments.HomeFragment
-import com.example.pma_kuharica.fragments.SearchFragment
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.Serializable
 
 
-class MainActivity : AppCompatActivity() {
-    private var mAdapter: ScreenSlidePagerAdapter? = null
-    private var mPager: ViewPager2? = null
+class MainActivity : AppCompatActivity(), Callback<HintsResults> {
+    lateinit var hintData: HintsResults
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-
+    val fragment1: Fragment = HomeFragment()
+    val fragment2: Fragment = IngredientFragment()
+    val fragment3: Fragment = InfoFragment()
+    val fragment4: Fragment = SearchFragment()
+    val fm: FragmentManager = supportFragmentManager
+    var active: Fragment = fragment1
+    var check=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        mAdapter = ScreenSlidePagerAdapter(this)
-        mPager = findViewById<View>(R.id.mainViewPager) as ViewPager2
-        mPager!!.setAdapter(mAdapter)
-        bottomNavigation.setOnItemSelectedListener{menuItem ->
-        when (menuItem.itemId) {
-            R.id.homePage -> {
-                mPager!!.setCurrentItem(0, true)
-                true
-            }
-            R.id.ingredientPage -> {
-                mPager!!.setCurrentItem(1, true)
-                true
-            }
-            R.id.infoPage -> {
-                mPager!!.setCurrentItem(2, true)
-                true
-            }
-        }
-        true
-        }
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        fm.beginTransaction().add(R.id.fragmentContainerView, fragment3, "3").hide(fragment3).commit()
+        fm.beginTransaction().add(R.id.fragmentContainerView, fragment2, "2").hide(fragment2).commit()
+        fm.beginTransaction().add(R.id.fragmentContainerView,fragment1, "1").commit()
 
+        val bottomNavigationView:BottomNavigationView=findViewById(R.id.bottom_navigation)
+        bottomNavigationView.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
+            val id = menuItem.itemId
+            when (id) {
+                R.id.homePage -> {
+                    fm.beginTransaction().hide(active).show(fragment1).commit()
+                    active = fragment1
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.ingredientPage -> {
+                    fm.beginTransaction().hide(active).show(fragment2).commit()
+                    active = fragment2
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.infoPage -> {
+                    fm.beginTransaction().hide(active).show(fragment3).commit()
+                    active = fragment3
+                    return@OnNavigationItemSelectedListener true
+                }
+                else -> true
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu) : Boolean {
@@ -66,18 +76,13 @@ class MainActivity : AppCompatActivity() {
         var searchViewItem:MenuItem=menu.findItem(R.id.action_search)
         var searchManager:SearchManager= getSystemService(Context.SEARCH_SERVICE) as SearchManager
         var searchView: SearchView =searchViewItem.actionView as SearchView
-        searchView.queryHint = "Search for ingredient..."
+        searchView.queryHint = "Search for ingredient or food..."
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-
         val queryTextListener: SearchView.OnQueryTextListener =
             object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String): Boolean {
-                    findViewById<ViewPager2>(R.id.mainViewPager).setBackgroundResource(R.color.fui_transparent)
-                    val searchFragment:SearchFragment= SearchFragment()
-                    val transaction:FragmentTransaction=supportFragmentManager.beginTransaction()
-                    transaction.replace(R.id.fragmentContainerView,searchFragment)
-                    transaction.addToBackStack(null)
-                    transaction.commit()
+                    var apiUrl:String=String.format("/api/food-database/v2/parser?app_id=0fe8f86d&app_key=875e22c3d3ec38bd2453e0223a451f16&ingr=%s",query)
+                    ApiManager.getNewInstance()?.service()?.getFood(apiUrl)?.enqueue(this@MainActivity)
                     return true
                 }
 
@@ -85,11 +90,11 @@ class MainActivity : AppCompatActivity() {
                     return false
                 }
             }
-        searchView.setOnQueryTextListener(queryTextListener);
+        searchView.setOnQueryTextListener(queryTextListener)
         return true;
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
+        when (item.itemId) {
             R.id.action_logout->{
                 signOut()
                 return true
@@ -116,6 +121,38 @@ class MainActivity : AppCompatActivity() {
         a.addCategory(Intent.CATEGORY_HOME)
         a.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(a)
+    }
+
+    override fun onResponse(@NonNull call: Call<HintsResults>, @NonNull response: Response<HintsResults>) {
+        if (response.isSuccessful && response.body() != null) {
+            hintData = response.body()!!
+            val mBundle = Bundle()
+            mBundle.putSerializable("mResults",hintData)
+            fragment4.arguments = mBundle
+            if(!fragment4.isAdded && fragment4!=active){
+                fm.beginTransaction().add(R.id.fragmentContainerView, fragment4, "4").hide(active).commit()
+                active=fragment4
+            }
+            else{
+                if(fragment4.isDetached) {
+                    fm.beginTransaction().attach(fragment4).commit()
+                    fm.beginTransaction().hide(active).show(fragment4).commit()
+                    active = fragment4
+                }
+                else{
+                    fm.beginTransaction().detach(fragment4).commit()
+                    fm.beginTransaction().attach(fragment4).commit()
+                    fm.beginTransaction().hide(active).show(fragment4).commit()
+                    active = fragment4
+                }
+            }
+            val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        }
+    }
+
+    override fun onFailure(call: Call<HintsResults>, t: Throwable) {
+        t.printStackTrace()
     }
 }
 

@@ -1,7 +1,7 @@
 package com.example.pma_kuharica.interfaces;
 
-import com.example.pma_kuharica.classes.Hint;
 import com.example.pma_kuharica.classes.HintsResults;
+import com.example.pma_kuharica.classes.Ingredient;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

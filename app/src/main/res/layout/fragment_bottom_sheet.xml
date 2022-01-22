@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.BottomSheetFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragments.BottomSheetFragment">
+        <TextView
+            android:id="@+id/headerNutrients"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            android:textSize="16dp"
+            android:text="Mesaure is 100 grams per serving"
+            ></TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Energy (kcal): "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/headerNutrients"
+            android:id="@+id/labelEnergy"
+            app:layout_constraintEnd_toStartOf="@+id/txtEnergy"
+            android:layout_marginStart="16dp"></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtEnergy"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/primaryRed"
+            app:layout_constraintStart_toEndOf="@+id/labelEnergy"
+            app:layout_constraintTop_toTopOf="@id/labelEnergy"></TextView>
+
+        <View style="@style/Divider.Horizontal"
+            android:id="@+id/energyDivider"
+            app:layout_constraintTop_toBottomOf="@+id/labelEnergy"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Protein: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/energyDivider"
+            android:id="@+id/labelProtein"
+            app:layout_constraintEnd_toStartOf="@+id/txtProtein"
+            android:layout_marginStart="16dp"></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtProtein"
+            android:textColor="@color/primaryRed"
+            android:layout_marginStart="5dp"
+            app:layout_constraintStart_toEndOf="@+id/labelProtein"
+            app:layout_constraintTop_toTopOf="@id/labelProtein"></TextView>
+
+        <View style="@style/Divider.Horizontal"
+            android:id="@+id/proteinDivider"
+            app:layout_constraintTop_toBottomOf="@+id/labelProtein"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Fat: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/proteinDivider"
+            android:id="@+id/labelFat"
+            app:layout_constraintEnd_toStartOf="@+id/txtFat"
+            android:layout_marginStart="16dp"></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtFat"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/primaryRed"
+            app:layout_constraintStart_toEndOf="@+id/labelFat"
+            app:layout_constraintTop_toTopOf="@id/labelFat"></TextView>
+
+        <View style="@style/Divider.Horizontal"
+            android:id="@+id/fatDivider"
+            app:layout_constraintTop_toBottomOf="@+id/labelFat"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Carbohydrate: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fatDivider"
+            android:id="@+id/labelCarbohydrate"
+            app:layout_constraintEnd_toStartOf="@+id/txtCarbohydrate"
+            android:layout_marginStart="16dp"></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtCarbohydrate"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/primaryRed"
+            app:layout_constraintStart_toEndOf="@+id/labelCarbohydrate"
+            app:layout_constraintTop_toTopOf="@id/labelCarbohydrate"></TextView>
+
+        <View style="@style/Divider.Horizontal"
+            android:id="@+id/carbohydrateDivider"
+            app:layout_constraintTop_toBottomOf="@+id/labelCarbohydrate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Fiber: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/carbohydrateDivider"
+            android:id="@+id/labelFiber"
+            app:layout_constraintEnd_toStartOf="@+id/txtFiber"
+            android:layout_marginStart="16dp"></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtFiber"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/primaryRed"
+            app:layout_constraintStart_toEndOf="@+id/labelFiber"
+            app:layout_constraintTop_toTopOf="@id/labelFiber"></TextView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

@@ -1,69 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.pma_kuharica.MainActivity">
-    <data>
-        <variable
-            name="vm"
-            type="com.example.pma_kuharica.classes.Food" />
-    </data>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/foodImage"
-        android:layout_width="100dp"
-        android:layout_height="150dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="150dp"
+        android:layout_height="160dp"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="50dp"
-        app:layout_constraintBottom_toBottomOf="@+id/txtCategoryView" />
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnViewNutrients"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/txtIngredientView"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/foodImage"
-        app:layout_constraintTop_toTopOf="@+id/foodImage"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="16dp">
+        app:layout_constraintStart_toEndOf="@+id/foodImage"
+        app:layout_constraintTop_toTopOf="@+id/foodImage">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inptIngredientView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:hint="Ingredient"
-            android:id="@+id/inptIngredientView"/>
+            android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Spinner
-        android:id="@+id/spinnerNutritiens"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/txtIngredientView"
-        app:layout_constraintEnd_toEndOf="@id/txtIngredientView"
-        app:layout_constraintTop_toBottomOf="@+id/txtIngredientView"
-        android:layout_marginTop="5dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/txtCategoryView"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/spinnerNutritiens"
-        app:layout_constraintTop_toBottomOf="@id/spinnerNutritiens"
-        app:layout_constraintEnd_toEndOf="@id/spinnerNutritiens"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="@id/txtIngredientView"
+        app:layout_constraintStart_toStartOf="@+id/txtIngredientView"
+        app:layout_constraintTop_toBottomOf="@id/txtIngredientView">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inptCategoryView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:hint="Category"
-            android:id="@+id/inptCategoryView"/>
+            android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
+    <Button
+        android:id="@+id/btnViewNutrients"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="View nutrients"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/txtCategoryView"
+        app:layout_constraintStart_toStartOf="@id/txtCategoryView"
+        app:layout_constraintEnd_toEndOf="@id/txtCategoryView"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>

@@ -9,7 +9,7 @@
         android:id="@+id/ingredientPage"
         android:enabled="true"
         android:icon="@drawable/ic_action_ingredient"
-        android:title="Ingredient"/>
+        android:title="Recipe"/>
     <item
         android:id="@+id/infoPage"
         android:enabled="true"
