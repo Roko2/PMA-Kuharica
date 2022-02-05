@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pma_kuharica.classes.Hint
 import com.example.pma_kuharica.classes.HintsResults
@@ -44,10 +45,9 @@ class FoodRecyclerViewAdapter(foodList: ArrayList<Hint>, context:AppCompatActivi
         var image: Bitmap? = null
         executor.execute {
             try {
-                if(oFood.food?.image == null || oFood.food?.image==""){
+                if (oFood.food?.image == null || oFood.food?.image == "") {
                     holder.foodImage.setImageResource(R.drawable.ic_noimage)
-                }
-                else {
+                } else {
                     val `in` = java.net.URL(oFood.food?.image).openStream()
                     image = BitmapFactory.decodeStream(`in`)
                     holder.foodImage.setImageBitmap(image)
@@ -72,6 +72,7 @@ class FoodRecyclerViewAdapter(foodList: ArrayList<Hint>, context:AppCompatActivi
         var categoryTxt: TextView = foodView.findViewById(R.id.inptCategoryView)
         var foodImage: ImageView = foodView.findViewById(R.id.foodImage)
         var btnNutrients: Button = foodView.findViewById(R.id.btnViewNutrients)
+        var checkBox:CheckBox=foodView.findViewById(R.id.star)
     }
 }
 

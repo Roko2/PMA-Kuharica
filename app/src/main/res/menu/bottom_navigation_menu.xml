@@ -13,6 +13,6 @@
     <item
         android:id="@+id/infoPage"
         android:enabled="true"
-        android:icon="@drawable/ic_action_info"
-        android:title="Info"/>
+        android:icon="@drawable/ic_star"
+        android:title="Favorites"/>
 </menu>

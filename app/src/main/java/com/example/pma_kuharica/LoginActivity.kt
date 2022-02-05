@@ -17,13 +17,15 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import android.widget.Toast
-
-
+import com.example.pma_kuharica.classes.User
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
 
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var database: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -34,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = Firebase.auth
-
+        database = Firebase.database.reference
         val gumbPrijava=findViewById<SignInButton>(R.id.sign_in_button)
         gumbPrijava.setSize(SignInButton.SIZE_WIDE)
         gumbPrijava.setOnClickListener{signIn()}
@@ -56,7 +58,6 @@ class LoginActivity : AppCompatActivity() {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
@@ -85,6 +86,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
+            var userFirebase= User(user.uid)
+            database.child(userFirebase.UserId).setValue(userFirebase)
             startActivity(Intent(this, MainActivity::class.java))
         }
     }

@@ -7,4 +7,9 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
     </style>
+    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+        <item name="android:drawable">@drawable/ic_favorite2</item>
+        <item name="colorAccent">@color/black</item>
+        <item name="android:textColorSecondary">@color/red</item>
+    </style>
 </resources>

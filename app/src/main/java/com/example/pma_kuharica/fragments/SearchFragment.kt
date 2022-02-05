@@ -7,8 +7,10 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,28 +41,30 @@ class SearchFragment : Fragment(), Callback<HintsResults> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val btnNext=getView()?.findViewById<Button>(R.id.btnNext)
-           var hintList = arguments?.getSerializable(
-                "mResults"
-            ) as HintsResults
+        val btnNext = getView()?.findViewById<Button>(R.id.btnNext)
 
-            if (hintList.mResults?.size == 0) {
-                getView()?.findViewById<TextView>(R.id.txtViewSearchMsg)?.text = "No results"
-                btnNext?.visibility=INVISIBLE
-            } else {
-                getView()?.findViewById<TextView>(R.id.txtViewSearchMsg)?.text = "Search results"
-                btnNext?.visibility= VISIBLE
-                btnNext?.setOnClickListener{
-                    var apiUrl:String=hintList.mNextPage?.next?.href.toString()
-                    val substringApi:String = apiUrl.subSequence(22, apiUrl.lastIndex+1).toString()
-                    ApiManager.getNewInstance()?.service()?.getFood(substringApi)?.enqueue(this)
-                }
-                mRecyclerView = getView()?.findViewById<View>(R.id.recyclerViewFood) as RecyclerView?
-                mLayoutManager = LinearLayoutManager(context)
-                mRecyclerView!!.layoutManager = mLayoutManager
-                mAdapter = FoodRecyclerViewAdapter(hintList.mResults!!, context as AppCompatActivity)
-                mRecyclerView!!.adapter = mAdapter
+        var hintList = arguments?.getSerializable(
+            "mResults"
+        ) as HintsResults
+
+        if (hintList.mResults?.size == 0) {
+            getView()?.findViewById<TextView>(R.id.txtViewSearchMsg)?.text = "No results"
+            btnNext?.visibility = INVISIBLE
+        } else {
+            getView()?.findViewById<TextView>(R.id.txtViewSearchMsg)?.text = "Search results"
+            btnNext?.visibility = VISIBLE
+            btnNext?.setOnClickListener {
+                var apiUrl: String = hintList.mNextPage?.next?.href.toString()
+                val substringApi: String = apiUrl.subSequence(22, apiUrl.lastIndex + 1).toString()
+                ApiManager.getNewInstance()?.service()?.getFood(substringApi)?.enqueue(this)
             }
+            mRecyclerView = getView()?.findViewById<View>(R.id.recyclerViewFood) as RecyclerView?
+            mLayoutManager = LinearLayoutManager(context)
+            mRecyclerView!!.layoutManager = mLayoutManager
+            mAdapter = FoodRecyclerViewAdapter(hintList.mResults!!, context as AppCompatActivity)
+            mRecyclerView!!.adapter = mAdapter
+        }
+
     }
 
     override fun onDestroy() {
