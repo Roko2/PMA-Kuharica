@@ -3,9 +3,13 @@ package com.example.pma_kuharica.fragments
 import android.app.ActionBar
 import android.app.Dialog
 import android.os.Bundle
+import android.os.Handler
+import android.text.Layout
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.annotation.NonNull
@@ -13,6 +17,10 @@ import androidx.annotation.Nullable
 import com.example.pma_kuharica.R
 import com.example.pma_kuharica.interfaces.IngredientInterface
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import android.widget.LinearLayout
+
+
+
 
 class IngredientFragment : Fragment() {
     var ingredientListener: IngredientInterface? = null
@@ -26,6 +34,7 @@ class IngredientFragment : Fragment() {
     private var txtFoodFloating: TextView? =null
     private var txtRecipeFloating: TextView? =null
     private var openFloatingButtons:FloatingActionButton?=null
+    var myHandler: Handler? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -62,11 +71,15 @@ class IngredientFragment : Fragment() {
         openFloatingButtons?.setOnClickListener{
             onAddButtonClicked()
         }
-        btnFood?.setOnClickListener{
-            showCustomDialog()
+        btnRecipe?.setOnClickListener{
+            showCustomDialogRecipe()
         }
+        btnFood?.setOnClickListener{
+            showCustomDialogFood()
+        }
+
     }
-    private fun showCustomDialog(){
+    private fun showCustomDialogRecipe(){
         val dialog= Dialog(requireActivity())
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -76,9 +89,28 @@ class IngredientFragment : Fragment() {
         val window: Window? = dialog.window
         window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
     }
+    private fun showCustomDialogFood(){
+        val dialog2= Dialog(requireActivity())
+
+        dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog2.setCancelable(true)
+        dialog2.setContentView(R.layout.add_food)
+
+        dialog2.show()
+        val window2: Window? = dialog2.window
+        window2?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        val categorySpinner = resources.getStringArray(R.array.category)
+        val spinner=window2?.findViewById<Spinner>(R.id.spinnerCategory)
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item, categorySpinner
+        )
+        spinner?.adapter=adapter
+    }
     private fun onAddButtonClicked() {
         setVisibility(clicked)
         setAnimation(clicked)
+        setClickable(clicked)
         clicked = !clicked
     }
     private fun setVisibility(clicked:Boolean){
@@ -112,11 +144,11 @@ class IngredientFragment : Fragment() {
 
     private fun setClickable(clicked: Boolean){
         if(!clicked){
-            btnFood?.isClickable=false
-            btnRecipe?.isClickable=false
-        }else{
             btnFood?.isClickable=true
             btnRecipe?.isClickable=true
+        }else{
+            btnFood?.isClickable=false
+            btnRecipe?.isClickable=false
         }
     }
 }

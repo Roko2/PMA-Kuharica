@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_margin="16dp">
+    android:layout_margin="16dp"
+    android:id="@+id/recipeLayout">
 
         <TextView
             android:layout_width="match_parent"
@@ -16,37 +17,60 @@
             android:paddingStart="16dp"
             android:textSize="20dp" />
 
-        <EditText
-            android:id="@+id/recipeName"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="4dp"
             android:layout_marginBottom="4dp"
-            android:hint="Name"
-            android:inputType="textEmailAddress" />
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <Spinner
-            android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/recipeName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Name" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/spinnerCategory"/>
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="match_parent"
+            android:text="Category:"
+            android:layout_marginTop="6dp"
+            android:textStyle="bold"
+            android:layout_marginStart="6dp"
+            android:textSize="16dp"/>
+
+        <TextView
+            android:layout_marginTop="6dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Ingredients:"
+            android:textStyle="bold"
+            android:layout_marginStart="6dp"
+            android:textSize="16dp" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginLeft="4dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="16dp"
             android:layout_marginRight="4dp"
-            android:layout_marginBottom="16dp"
-            android:fontFamily="sans-serif"
-            android:hint="Category"
-            app:layout_constraintTop_toBottomOf="@+id/username" />
+            android:layout_marginBottom="4dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="hint" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Add"
+            android:layout_marginTop="16dp"
             android:textColorHint="@color/white"
             android:layout_gravity="right" />
+
 </LinearLayout>
