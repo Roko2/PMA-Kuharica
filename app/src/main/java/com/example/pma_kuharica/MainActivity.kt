@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.SearchView
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -29,24 +31,25 @@ import java.io.Serializable
 
 
 class MainActivity : AppCompatActivity(), Callback<HintsResults> {
-    lateinit var hintData: HintsResults
     private lateinit var mAuth: FirebaseAuth
+    private lateinit var hintData: HintsResults
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     val fragment1: Fragment = HomeFragment()
     val fragment2: Fragment = IngredientFragment()
     val fragment3: Fragment = InfoFragment()
     val fragment4: Fragment = SearchFragment()
+    val fragment5: Fragment = AddRecipeFragment()
     val fm: FragmentManager = supportFragmentManager
     var active: Fragment = fragment1
-    var check=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        fm.beginTransaction().add(R.id.fragmentContainerView, fragment5, "5").hide(fragment5).commit()
+//        fm.beginTransaction().add(R.id.fragmentContainerView, fragment4, "4").hide(fragment4).commit()
         fm.beginTransaction().add(R.id.fragmentContainerView, fragment3, "3").hide(fragment3).commit()
         fm.beginTransaction().add(R.id.fragmentContainerView, fragment2, "2").hide(fragment2).commit()
         fm.beginTransaction().add(R.id.fragmentContainerView,fragment1, "1").commit()
-
         val bottomNavigationView:BottomNavigationView=findViewById(R.id.bottom_navigation)
         bottomNavigationView.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
             val id = menuItem.itemId
@@ -57,8 +60,16 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.ingredientPage -> {
-                    fm.beginTransaction().hide(active).show(fragment2).commit()
+                    fm.beginTransaction().hide(active).show(fragment2).addToBackStack( "fragment2" ).commit()
                     active = fragment2
+                    findViewById<FloatingActionButton>(R.id.floatingBtnRecipe).setOnClickListener{
+                        fm.beginTransaction().hide(active).show(fragment5).addToBackStack( "fragment5" ).commit()
+                        active = fragment5
+                        findViewById<Button>(R.id.addIngredient).setOnClickListener{
+                            fm.beginTransaction().hide(active).show(fragment4).addToBackStack( "fragment4" ).commit()
+                            active = fragment4
+                        }
+                    }
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.infoPage -> {
@@ -100,6 +111,8 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
                 return true
             }
             R.id.action_search->{
+                fm.beginTransaction().hide(active).show(fragment4).commit()
+                active = fragment4
                 return true
             }
             else ->
@@ -116,13 +129,19 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-    override fun onBackPressed() {
-        val a = Intent(Intent.ACTION_MAIN)
-        a.addCategory(Intent.CATEGORY_HOME)
-        a.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(a)
-    }
 
+    override fun onBackPressed() {
+        if(fm.backStackEntryCount==0)
+        {
+            val a = Intent(Intent.ACTION_MAIN)
+            a.addCategory(Intent.CATEGORY_HOME)
+            a.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(a)
+        }
+        else{
+            super.onBackPressed()
+        }
+    }
     override fun onResponse(@NonNull call: Call<HintsResults>, @NonNull response: Response<HintsResults>) {
         if (response.isSuccessful && response.body() != null) {
             hintData = response.body()!!

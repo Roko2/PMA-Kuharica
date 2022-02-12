@@ -39,11 +39,16 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         var nutrients = arguments?.getSerializable(
             "nutrients"
         ) as Nutrients
-        view.findViewById<TextView>(R.id.txtEnergy).text = BigDecimal(nutrients.ENERC_KCAL).setScale(2, RoundingMode.HALF_EVEN).toString()
-        view.findViewById<TextView>(R.id.txtProtein).text=BigDecimal(nutrients.PROCNT).setScale(2,RoundingMode.HALF_EVEN).toString()
-        view.findViewById<TextView>(R.id.txtFat).text=BigDecimal(nutrients.FAT).setScale(2,RoundingMode.HALF_EVEN).toString()
-        view.findViewById<TextView>(R.id.txtCarbohydrate).text=BigDecimal(nutrients.CHOCDF).setScale(2,RoundingMode.HALF_EVEN).toString()
-        view.findViewById<TextView>(R.id.txtFiber).text=BigDecimal(nutrients.FIBTG).setScale(2,RoundingMode.HALF_EVEN).toString()
+        view.findViewById<TextView>(R.id.txtEnergy).text =
+            nutrients.ENERC_KCAL?.let { BigDecimal(it).setScale(2, RoundingMode.HALF_EVEN).toString() }
+        view.findViewById<TextView>(R.id.txtProtein).text=
+            nutrients.PROCNT?.let { BigDecimal(it).setScale(2,RoundingMode.HALF_EVEN).toString() }
+        view.findViewById<TextView>(R.id.txtFat).text=
+            nutrients.FAT?.let { BigDecimal(it).setScale(2,RoundingMode.HALF_EVEN).toString() }
+        view.findViewById<TextView>(R.id.txtCarbohydrate).text=
+            nutrients.CHOCDF?.let { BigDecimal(it).setScale(2,RoundingMode.HALF_EVEN).toString() }
+        view.findViewById<TextView>(R.id.txtFiber).text=
+            nutrients.FIBTG?.let { BigDecimal(it).setScale(2,RoundingMode.HALF_EVEN).toString() }
     }
 
     override fun onDetach() {

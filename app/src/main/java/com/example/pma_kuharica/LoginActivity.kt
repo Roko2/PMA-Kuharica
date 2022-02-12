@@ -78,7 +78,12 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
     }
-
+    override fun onBackPressed() {
+        val a = Intent(Intent.ACTION_MAIN)
+        a.addCategory(Intent.CATEGORY_HOME)
+        a.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(a)
+    }
      private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
@@ -86,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
-            var userFirebase= User(user.uid)
+            val userFirebase= User(user.uid)
             database.child(userFirebase.UserId).setValue(userFirebase)
             startActivity(Intent(this, MainActivity::class.java))
         }

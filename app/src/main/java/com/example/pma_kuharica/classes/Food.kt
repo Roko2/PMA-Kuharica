@@ -1,20 +1,21 @@
 package com.example.pma_kuharica.classes
 
+import android.widget.EditText
 import com.google.gson.annotations.SerializedName
 
 data class Food(
     @SerializedName("category")
     val category: String,
     @SerializedName("categoryLabel")
-    val categoryLabel: String,
+    val categoryLabel: String?,
     @SerializedName("foodContentsLabel")
-    val foodContentsLabel: String,
+    val foodContentsLabel: String?,
     @SerializedName("foodId")
     val foodId: String,
     @SerializedName("image")
     val image: String?,
     @SerializedName("label")
-    val label: String,
+    val label: String?,
     @SerializedName("nutrients")
     val nutrients: Nutrients,
     @SerializedName("servingSizes")

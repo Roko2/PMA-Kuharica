@@ -1,25 +1,29 @@
 package com.example.pma_kuharica.fragments
 
-import android.app.ActionBar
 import android.app.Dialog
 import android.os.Bundle
 import android.os.Handler
-import android.text.Layout
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.annotation.NonNull
-import androidx.annotation.Nullable
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.pma_kuharica.adapters.FoodRecyclerViewAdapter
 import com.example.pma_kuharica.R
+import com.example.pma_kuharica.adapters.MyFoodRecyclerViewAdapter
+import com.example.pma_kuharica.classes.Food
+import com.example.pma_kuharica.classes.Nutrients
 import com.example.pma_kuharica.interfaces.IngredientInterface
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import android.widget.LinearLayout
-
-
+import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import java.util.*
 
 
 class IngredientFragment : Fragment() {
@@ -28,7 +32,13 @@ class IngredientFragment : Fragment() {
     private val rotateClose: Animation by lazy{ AnimationUtils.loadAnimation(context,R.anim.rotate_close_anim)}
     private val fromBottom: Animation by lazy{ AnimationUtils.loadAnimation(context,R.anim.from_bottom_anim)}
     private val toBottom: Animation by lazy{ AnimationUtils.loadAnimation(context,R.anim.to_bottom_anim)}
-    private var clicked=false;
+    private val fragmentAddRecipe: Fragment = AddRecipeFragment()
+    private var mRecyclerView: RecyclerView? = null
+    private var mAdapter: RecyclerView.Adapter<*>? = null
+    private var database:FirebaseDatabase=FirebaseDatabase.getInstance()
+    private var dbReference: DatabaseReference=database.reference
+    private var mLayoutManager: RecyclerView.LayoutManager? = null
+    private var clicked=false
     private var btnFood: FloatingActionButton? = null
     private var btnRecipe : FloatingActionButton? = null
     private var txtFoodFloating: TextView? =null
@@ -71,24 +81,11 @@ class IngredientFragment : Fragment() {
         openFloatingButtons?.setOnClickListener{
             onAddButtonClicked()
         }
-        btnRecipe?.setOnClickListener{
-            showCustomDialogRecipe()
-        }
         btnFood?.setOnClickListener{
             showCustomDialogFood()
         }
-
     }
-    private fun showCustomDialogRecipe(){
-        val dialog= Dialog(requireActivity())
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
-        dialog.setContentView(R.layout.add_recipe)
-        dialog.show()
-        val window: Window? = dialog.window
-        window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
-    }
     private fun showCustomDialogFood(){
         val dialog2= Dialog(requireActivity())
 
@@ -106,6 +103,23 @@ class IngredientFragment : Fragment() {
             android.R.layout.simple_spinner_dropdown_item, categorySpinner
         )
         spinner?.adapter=adapter
+        window2?.findViewById<Button>(R.id.addFood)?.setOnClickListener{
+            val nutrients=Nutrients(CHOCDF = window2.findViewById<TextInputLayout>(R.id.foodCarb).editText?.text.toString().toDoubleOrNull(),
+                                    ENERC_KCAL = window2.findViewById<TextInputLayout>(R.id.foodEnergy).editText?.text.toString().toDoubleOrNull(),
+                                    FAT = window2.findViewById<TextInputLayout>(R.id.foodFat).editText?.text.toString().toDoubleOrNull(),
+                                    FIBTG=window2.findViewById<TextInputLayout>(R.id.foodFiber).editText?.text.toString().toDoubleOrNull(),
+                                    PROCNT = window2.findViewById<TextInputLayout>(R.id.foodProtein).editText?.text.toString().toDoubleOrNull())
+            val food=Food(label = window2.findViewById<TextInputLayout>(R.id.foodName).editText?.text.toString(), category =spinner?.selectedItem.toString(), nutrients = nutrients, foodId = UUID.randomUUID().toString(), categoryLabel = null, foodContentsLabel = null, image = null, servingSizes = null)
+            val userFirebase: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+            dbReference.child(userFirebase!!.uid).setValue(food)
+            Toast.makeText(context, "Food is added", Toast.LENGTH_SHORT).show()
+            dialog2.hide()
+            mRecyclerView = view?.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
+            mLayoutManager = LinearLayoutManager(context)
+            mRecyclerView!!.layoutManager = mLayoutManager
+            mAdapter = MyFoodRecyclerViewAdapter(food, context as AppCompatActivity)
+            mRecyclerView!!.adapter = mAdapter
+        }
     }
     private fun onAddButtonClicked() {
         setVisibility(clicked)

@@ -1,4 +1,4 @@
-package com.example.pma_kuharica
+package com.example.pma_kuharica.adapters
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
@@ -9,10 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pma_kuharica.R
 import com.example.pma_kuharica.classes.Hint
-import com.example.pma_kuharica.classes.HintsResults
 import com.example.pma_kuharica.classes.Nutrients
 import com.example.pma_kuharica.fragments.BottomSheetFragment
 import java.util.ArrayList

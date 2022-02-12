@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_margin="16dp"
-    android:id="@+id/foodLayout">
-
+    android:id="@+id/foodLayout"
+    android:layout_gravity="top"
+    >
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,6 +25,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/foodName"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="4dp"
@@ -27,10 +33,10 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/recipeName"
+            android:id="@+id/foodNameInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name" />
+            android:hint="Food name" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -57,6 +63,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/foodEnergy"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="4dp"
@@ -67,11 +74,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Energy (kcal)"
-            android:inputType="numberDecimal"/>
+            android:inputType="numberDecimal"
+            android:id="@+id/foodEnergyInput"/>
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/foodProtein"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="4dp"
@@ -82,11 +91,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Proteins"
-            android:inputType="numberDecimal"/>
+            android:inputType="numberDecimal"
+            android:id="@+id/foodProteinInput"/>
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/foodFat"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="4dp"
@@ -97,11 +108,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Fat"
-            android:inputType="numberDecimal"/>
+            android:inputType="numberDecimal"
+            android:id="@+id/foodFatInput"/>
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/foodCarb"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="4dp"
@@ -112,11 +125,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Carbohydrates"
-            android:inputType="numberDecimal"/>
+            android:inputType="numberDecimal"
+            android:id="@+id/foodCarbInput"/>
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/foodFiber"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="4dp"
@@ -127,14 +142,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Fiber"
-            android:inputType="numberDecimal"/>
+            android:inputType="numberDecimal"
+            android:id="@+id/foodFiberInput"
+            android:layout_alignParentBottom="true"/>
     </com.google.android.material.textfield.TextInputLayout>
     <Button
+        android:id="@+id/addFood"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Add"
         android:layout_marginTop="16dp"
         android:textColorHint="@color/white"
         android:layout_gravity="right" />
-
 </LinearLayout>
+</ScrollView>
