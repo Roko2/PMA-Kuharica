@@ -3,26 +3,27 @@ package com.example.pma_kuharica.fragments
 import android.app.Dialog
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
-import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.pma_kuharica.adapters.FoodRecyclerViewAdapter
 import com.example.pma_kuharica.R
 import com.example.pma_kuharica.adapters.MyFoodRecyclerViewAdapter
 import com.example.pma_kuharica.classes.Food
 import com.example.pma_kuharica.classes.Nutrients
+import com.example.pma_kuharica.fragments.BottomSheetFragment.Companion.TAG
 import com.example.pma_kuharica.interfaces.IngredientInterface
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import java.util.*
 
 
@@ -35,7 +36,9 @@ class IngredientFragment : Fragment() {
     private val fragmentAddRecipe: Fragment = AddRecipeFragment()
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
+    val foodList: MutableList<Food> = mutableListOf()
     private var database:FirebaseDatabase=FirebaseDatabase.getInstance()
+    private val mAuth: FirebaseAuth? = null
     private var dbReference: DatabaseReference=database.reference
     private var mLayoutManager: RecyclerView.LayoutManager? = null
     private var clicked=false
@@ -77,13 +80,54 @@ class IngredientFragment : Fragment() {
         btnRecipe=view.findViewById(R.id.floatingBtnRecipe)
         txtFoodFloating=view.findViewById(R.id.addFoodTxt)
         txtRecipeFloating=view.findViewById(R.id.addRecipeTxt)
-
         openFloatingButtons?.setOnClickListener{
             onAddButtonClicked()
         }
         btnFood?.setOnClickListener{
             showCustomDialogFood()
         }
+        val childEventListener = object : ChildEventListener {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                    for (postSnapshot in dataSnapshot.children) {
+                            if (postSnapshot.value != null && postSnapshot.key == "Food") {
+                                val storedFood: Food? = postSnapshot.getValue<Food>()
+                                val storedNutrients: Nutrients? = postSnapshot.getValue<Nutrients>()
+                                storedFood?.nutrients = storedNutrients
+                                foodList.add(storedFood!!)
+                            }
+                    }
+                        mRecyclerView = view.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
+                        mLayoutManager = LinearLayoutManager(context)
+                        mRecyclerView!!.layoutManager = mLayoutManager
+                        mAdapter = MyFoodRecyclerViewAdapter(
+                            foodList as ArrayList<Food>,
+                            context as AppCompatActivity
+                        )
+                        mRecyclerView!!.adapter = mAdapter
+            }
+
+            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                Log.d(TAG, "onChildChanged: ${dataSnapshot.value}")
+                val newComment = dataSnapshot.getValue<Food>()
+                val commentKey = dataSnapshot.key
+            }
+
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+                val commentKey = dataSnapshot.key
+            }
+
+            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                val movedComment = dataSnapshot.getValue<Food>()
+                val commentKey = dataSnapshot.key
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "postComments:onCancelled", databaseError.toException())
+                Toast.makeText(context, "Failed to load comments.",
+                    Toast.LENGTH_SHORT).show()
+            }
+        }
+        dbReference.addChildEventListener(childEventListener)
     }
 
     private fun showCustomDialogFood(){
@@ -104,20 +148,22 @@ class IngredientFragment : Fragment() {
         )
         spinner?.adapter=adapter
         window2?.findViewById<Button>(R.id.addFood)?.setOnClickListener{
+            var randFoodId=UUID.randomUUID().toString()
             val nutrients=Nutrients(CHOCDF = window2.findViewById<TextInputLayout>(R.id.foodCarb).editText?.text.toString().toDoubleOrNull(),
                                     ENERC_KCAL = window2.findViewById<TextInputLayout>(R.id.foodEnergy).editText?.text.toString().toDoubleOrNull(),
                                     FAT = window2.findViewById<TextInputLayout>(R.id.foodFat).editText?.text.toString().toDoubleOrNull(),
                                     FIBTG=window2.findViewById<TextInputLayout>(R.id.foodFiber).editText?.text.toString().toDoubleOrNull(),
                                     PROCNT = window2.findViewById<TextInputLayout>(R.id.foodProtein).editText?.text.toString().toDoubleOrNull())
-            val food=Food(label = window2.findViewById<TextInputLayout>(R.id.foodName).editText?.text.toString(), category =spinner?.selectedItem.toString(), nutrients = nutrients, foodId = UUID.randomUUID().toString(), categoryLabel = null, foodContentsLabel = null, image = null, servingSizes = null)
+            val food=Food(label = window2.findViewById<TextInputLayout>(R.id.foodName).editText?.text.toString(), category =spinner?.selectedItem.toString(), nutrients = nutrients, foodId = randFoodId, categoryLabel = "", foodContentsLabel = "", image = "", servingSizes = "")
             val userFirebase: FirebaseUser? = FirebaseAuth.getInstance().currentUser
-            dbReference.child(userFirebase!!.uid).setValue(food)
+            dbReference.child(userFirebase!!.uid).child("Food").push().setValue(food)
+            foodList.add(food)
             Toast.makeText(context, "Food is added", Toast.LENGTH_SHORT).show()
             dialog2.hide()
             mRecyclerView = view?.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
             mLayoutManager = LinearLayoutManager(context)
             mRecyclerView!!.layoutManager = mLayoutManager
-            mAdapter = MyFoodRecyclerViewAdapter(food, context as AppCompatActivity)
+            mAdapter = MyFoodRecyclerViewAdapter(foodList as ArrayList<Food>, context as AppCompatActivity)
             mRecyclerView!!.adapter = mAdapter
         }
     }

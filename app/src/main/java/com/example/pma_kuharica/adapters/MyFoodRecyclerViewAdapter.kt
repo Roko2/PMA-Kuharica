@@ -20,8 +20,8 @@ import com.example.pma_kuharica.fragments.BottomSheetFragment
 import java.util.ArrayList
 import java.util.concurrent.Executors
 
-class MyFoodRecyclerViewAdapter (oFood: Food, context: AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var food: Food = oFood
+class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>, context: AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var food: ArrayList<Food> = oFood
     private var context:AppCompatActivity = context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -31,9 +31,9 @@ class MyFoodRecyclerViewAdapter (oFood: Food, context: AppCompatActivity) : Recy
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as MyFoodViewHolder
-        var oNutrients: Nutrients = food.nutrients
-        holder.myFoodName.text = food.label
-        holder.myCategoryName.text = food.category
+        val oNutrients: Nutrients = food[position].nutrients!!
+        holder.myFoodName.text = food[position].label
+        holder.myCategoryName.text = food[position].category
         holder.btnMyFoodNutrients.setOnClickListener {
             val modalBottomSheet = BottomSheetFragment()
             val mBundle = Bundle()
@@ -54,6 +54,6 @@ class MyFoodRecyclerViewAdapter (oFood: Food, context: AppCompatActivity) : Recy
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return food.size
     }
 }

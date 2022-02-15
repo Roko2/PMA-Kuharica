@@ -29,10 +29,10 @@ class FoodRecyclerViewAdapter(foodList: ArrayList<Hint>, context:AppCompatActivi
     @SuppressLint("RestrictedApi", "ResourceType")
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as FoodViewHolder
-        val oFood: Hint = dataList!![position]
-        var oNutrients:Nutrients=oFood.food!!.nutrients
-        holder.ingredientTxt.text = oFood.food?.label
-        holder.categoryTxt.text = oFood.food?.category
+        val oFood: Hint = dataList[position]
+        var oNutrients:Nutrients= oFood.food!!.nutrients!!
+        holder.ingredientTxt.text = oFood.food.label
+        holder.categoryTxt.text = oFood.food.category
         holder.btnNutrients.setOnClickListener {
             val modalBottomSheet = BottomSheetFragment()
             val mBundle = Bundle()
@@ -44,10 +44,10 @@ class FoodRecyclerViewAdapter(foodList: ArrayList<Hint>, context:AppCompatActivi
         var image: Bitmap? = null
         executor.execute {
             try {
-                if (oFood.food?.image == null || oFood.food?.image == "") {
+                if (oFood.food.image == null || oFood.food.image == "") {
                     holder.foodImage.setImageResource(R.drawable.ic_noimage)
                 } else {
-                    val `in` = java.net.URL(oFood.food?.image).openStream()
+                    val `in` = java.net.URL(oFood.food.image).openStream()
                     image = BitmapFactory.decodeStream(`in`)
                     holder.foodImage.setImageBitmap(image)
                 }
@@ -62,7 +62,7 @@ class FoodRecyclerViewAdapter(foodList: ArrayList<Hint>, context:AppCompatActivi
     }
 
     override fun getItemCount(): Int {
-        return dataList!!.size
+        return dataList.size
     }
 
     internal class FoodViewHolder(foodView: View) :

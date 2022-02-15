@@ -1,11 +1,10 @@
 package com.example.pma_kuharica
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import com.example.pma_kuharica.classes.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -15,11 +14,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import android.widget.Toast
-import com.example.pma_kuharica.classes.User
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 
 class LoginActivity : AppCompatActivity() {
@@ -91,8 +88,9 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
-            val userFirebase= User(user.uid)
-            database.child(userFirebase.UserId).setValue(userFirebase)
+            val userMap: HashMap<String, String> = HashMap()
+            userMap["userId"] = user.uid
+            database.child(user.uid).updateChildren(userMap as Map<String, Any>)
             startActivity(Intent(this, MainActivity::class.java))
         }
     }
