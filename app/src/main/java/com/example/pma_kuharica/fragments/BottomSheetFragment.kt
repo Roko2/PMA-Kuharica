@@ -40,15 +40,15 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
             "nutrients"
         ) as Nutrients
         view.findViewById<TextView>(R.id.txtEnergy).text =
-            nutrients.ENERC_KCAL?.let { BigDecimal(it).setScale(2, RoundingMode.HALF_EVEN).toString() }
+            nutrients.enerc_KCAL?.let { BigDecimal(it).setScale(2, RoundingMode.HALF_EVEN).toString() }
         view.findViewById<TextView>(R.id.txtProtein).text=
-            nutrients.PROCNT?.let { BigDecimal(it).setScale(2,RoundingMode.HALF_EVEN).toString() }
+            nutrients.procnt?.let { BigDecimal(it).setScale(2,RoundingMode.HALF_EVEN).toString() }
         view.findViewById<TextView>(R.id.txtFat).text=
-            nutrients.FAT?.let { BigDecimal(it).setScale(2,RoundingMode.HALF_EVEN).toString() }
+            nutrients.fat?.let { BigDecimal(it).setScale(2,RoundingMode.HALF_EVEN).toString() }
         view.findViewById<TextView>(R.id.txtCarbohydrate).text=
-            nutrients.CHOCDF?.let { BigDecimal(it).setScale(2,RoundingMode.HALF_EVEN).toString() }
+            nutrients.chocdf?.let { BigDecimal(it).setScale(2,RoundingMode.HALF_EVEN).toString() }
         view.findViewById<TextView>(R.id.txtFiber).text=
-            nutrients.FIBTG?.let { BigDecimal(it).setScale(2,RoundingMode.HALF_EVEN).toString() }
+            nutrients.fibtg?.let { BigDecimal(it).setScale(2,RoundingMode.HALF_EVEN).toString() }
     }
 
     override fun onDetach() {
