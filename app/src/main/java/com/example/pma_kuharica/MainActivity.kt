@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
                 }
             }
         searchView.setOnQueryTextListener(queryTextListener)
-        return true;
+       return true
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -111,8 +111,6 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
                 return true
             }
             R.id.action_search->{
-                fm.beginTransaction().hide(active).show(fragment4).commit()
-                active = fragment4
                 return true
             }
             else ->

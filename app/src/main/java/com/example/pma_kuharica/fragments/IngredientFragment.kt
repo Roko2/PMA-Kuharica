@@ -2,8 +2,6 @@ package com.example.pma_kuharica.fragments
 
 import android.app.Dialog
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -16,7 +14,6 @@ import com.example.pma_kuharica.R
 import com.example.pma_kuharica.adapters.MyFoodRecyclerViewAdapter
 import com.example.pma_kuharica.classes.Food
 import com.example.pma_kuharica.classes.Nutrients
-import com.example.pma_kuharica.fragments.BottomSheetFragment.Companion.TAG
 import com.example.pma_kuharica.interfaces.IngredientInterface
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
@@ -24,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
-import kotlinx.serialization.json.Json
 import java.util.*
 
 
@@ -38,6 +34,7 @@ class IngredientFragment : Fragment() {
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
     val foodList: MutableList<Food> = mutableListOf()
+    val nodeValue:MutableList<String> = mutableListOf()
     private var database:FirebaseDatabase=FirebaseDatabase.getInstance()
     private var dbReference: DatabaseReference=database.reference
     private val mAuth: FirebaseAuth=FirebaseAuth.getInstance()
@@ -48,8 +45,6 @@ class IngredientFragment : Fragment() {
     private var txtFoodFloating: TextView? =null
     private var txtRecipeFloating: TextView? =null
     private var openFloatingButtons:FloatingActionButton?=null
-    private var oNutrientsNew:Nutrients?= null
-    var myHandler: Handler? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -93,69 +88,38 @@ class IngredientFragment : Fragment() {
         db.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 foodList.clear()
+                nodeValue.clear()
                 for(postSnapshot in snapshot.children){
                     if (postSnapshot.value != null) {
                                 val storedFood: Food? = postSnapshot.getValue<Food>()
+                                nodeValue.add(postSnapshot.key.toString())
                                 foodList.add(storedFood!!)
                             }
                 }
-                mRecyclerView = view.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
-                        mLayoutManager = LinearLayoutManager(context)
-                        mRecyclerView!!.layoutManager = mLayoutManager
-                        mAdapter = MyFoodRecyclerViewAdapter(
-                            foodList as ArrayList<Food>,
-                            context as AppCompatActivity
-                        )
-                        mRecyclerView!!.adapter = mAdapter
+                if(foodList.size>0) {
+                    view.findViewById<RecyclerView>(R.id.recyclerViewMyFood).visibility=View.VISIBLE
+                    view.findViewById<TextView>(R.id.myFoodEmpty).visibility=View.INVISIBLE
+                    mRecyclerView =
+                        view.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
+                    mLayoutManager = LinearLayoutManager(context)
+                    mRecyclerView!!.layoutManager = mLayoutManager
+                    mAdapter = MyFoodRecyclerViewAdapter(
+                        foodList as ArrayList<Food>,
+                        nodeValue as ArrayList<String>,
+                        context as AppCompatActivity
+                    )
+                    mRecyclerView!!.adapter = mAdapter
+                }
+                else{
+                    view.findViewById<RecyclerView>(R.id.recyclerViewMyFood).visibility=View.INVISIBLE
+                    view.findViewById<TextView>(R.id.myFoodEmpty).visibility=View.VISIBLE
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
         })
-
-//        val childEventListener = object : ChildEventListener {
-//            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
-//                    for (postSnapshot in dataSnapshot.children) {
-//                            if (postSnapshot.value != null && postSnapshot.key == "Food") {
-//                                val storedFood: Food? = postSnapshot.getValue<Food>()
-//                                val storedNutrients: Nutrients? = postSnapshot.getValue<Nutrients>()
-//                                storedFood?.nutrients = storedNutrients
-//                                foodList.add(storedFood!!)
-//                            }
-//                    }
-//                        mRecyclerView = view.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
-//                        mLayoutManager = LinearLayoutManager(context)
-//                        mRecyclerView!!.layoutManager = mLayoutManager
-//                        mAdapter = MyFoodRecyclerViewAdapter(
-//                            foodList as ArrayList<Food>,
-//                            context as AppCompatActivity
-//                        )
-//                        mRecyclerView!!.adapter = mAdapter
-//            }
-//
-//            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
-//                Log.d(TAG, "onChildChanged: ${dataSnapshot.value}")
-//                val newComment = dataSnapshot.getValue<Food>()
-//                val commentKey = dataSnapshot.key
-//            }
-//
-//            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-//                val commentKey = dataSnapshot.key
-//            }
-//
-//            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
-//                val movedComment = dataSnapshot.getValue<Food>()
-//                val commentKey = dataSnapshot.key
-//            }
-//
-//            override fun onCancelled(databaseError: DatabaseError) {
-//                Log.w(TAG, "postComments:onCancelled", databaseError.toException())
-//                Toast.makeText(context, "Failed to load comments.",
-//                    Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//        dbReference.addChildEventListener(childEventListener)
     }
 
     private fun showCustomDialogFood(){
@@ -176,23 +140,32 @@ class IngredientFragment : Fragment() {
         )
         spinner?.adapter=adapter
         window2?.findViewById<Button>(R.id.addFood)?.setOnClickListener{
-            var randFoodId=UUID.randomUUID().toString()
-            val nutrients=Nutrients(chocdf = window2.findViewById<TextInputLayout>(R.id.foodCarb).editText?.text.toString().toDoubleOrNull(),
-                                    enerc_KCAL = window2.findViewById<TextInputLayout>(R.id.foodEnergy).editText?.text.toString().toDoubleOrNull(),
-                                    fat = window2.findViewById<TextInputLayout>(R.id.foodFat).editText?.text.toString().toDoubleOrNull(),
-                                    fibtg  =window2.findViewById<TextInputLayout>(R.id.foodFiber).editText?.text.toString().toDoubleOrNull(),
-                                    procnt = window2.findViewById<TextInputLayout>(R.id.foodProtein).editText?.text.toString().toDoubleOrNull())
-            val food=Food(label = window2.findViewById<TextInputLayout>(R.id.foodName).editText?.text.toString(), category =spinner?.selectedItem.toString(), nutrients = nutrients, foodId = randFoodId, categoryLabel = "", foodContentsLabel = "", image = "", servingSizes = "")
+            val randFoodId=UUID.randomUUID().toString()
+            val foodChocdf=if(window2.findViewById<TextInputLayout>(R.id.foodCarb).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodCarb).editText?.text.toString().toDouble()
+            val foodEnerc_KCAL=if(window2.findViewById<TextInputLayout>(R.id.foodEnergy).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodEnergy).editText?.text.toString().toDouble()
+            val foodFat=if(window2.findViewById<TextInputLayout>(R.id.foodFat).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodFat).editText?.text.toString().toDouble()
+            val foodFibtg=if(window2.findViewById<TextInputLayout>(R.id.foodFiber).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodFiber).editText?.text.toString().toDouble()
+            val foodProcnt=if(window2.findViewById<TextInputLayout>(R.id.foodProtein).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodProtein).editText?.text.toString().toDouble()
+            val nutrients=Nutrients(chocdf = foodChocdf,
+                                    enerc_KCAL = foodEnerc_KCAL,
+                                    fat = foodFat,
+                                    fibtg  =foodFibtg,
+                                    procnt = foodProcnt)
+
+            val food=Food(label = window2.findViewById<TextInputLayout>(R.id.foodName).editText?.text.toString(), category =spinner?.selectedItem.toString(), nutrients = nutrients, foodId = randFoodId, categoryLabel = "", foodContentsLabel = "", image = "")
             val userFirebase: FirebaseUser? = FirebaseAuth.getInstance().currentUser
-            dbReference.child(userFirebase!!.uid).child("Food").push().setValue(food)
+            val newNode=dbReference.child(userFirebase!!.uid).child("Food").push().key.toString()
+            nodeValue.add(newNode)
+            dbReference.child(userFirebase.uid).child("Food").child(newNode).setValue(food)
             foodList.add(food)
             Toast.makeText(context, "Food is added", Toast.LENGTH_SHORT).show()
             dialog2.hide()
             mRecyclerView = view?.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
             mLayoutManager = LinearLayoutManager(context)
             mRecyclerView!!.layoutManager = mLayoutManager
-            mAdapter = MyFoodRecyclerViewAdapter(foodList as ArrayList<Food>, context as AppCompatActivity)
+            mAdapter = MyFoodRecyclerViewAdapter(foodList as ArrayList<Food>,nodeValue as ArrayList<String>, context as AppCompatActivity)
             mRecyclerView!!.adapter = mAdapter
+            onAddButtonClicked()
         }
     }
     private fun onAddButtonClicked() {

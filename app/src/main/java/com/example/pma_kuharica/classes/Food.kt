@@ -17,6 +17,4 @@ data class Food(
     val label: String?="",
     @SerializedName("nutrients")
     var nutrients: Nutrients? = null,
-    @SerializedName("servingSizes")
-    val servingSizes: String?=""
 )

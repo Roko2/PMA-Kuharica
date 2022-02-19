@@ -13,14 +13,15 @@ import com.example.pma_kuharica.R
 import com.example.pma_kuharica.classes.Food
 import com.example.pma_kuharica.classes.Hint
 import com.example.pma_kuharica.classes.Nutrients
+import com.example.pma_kuharica.classes.Recipe
 import com.example.pma_kuharica.fragments.BottomSheetFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import java.util.ArrayList
 import java.util.concurrent.Executors
 
-class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>,oNodeKeys:ArrayList<String>, context: AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var food: ArrayList<Food> = oFood
+class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>,oNodeKeys:ArrayList<String>, context: AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var food: ArrayList<Recipe> = oRecipe
     private var nodeValue:ArrayList<String> = oNodeKeys
     private var context:AppCompatActivity = context
     private var database:FirebaseDatabase= FirebaseDatabase.getInstance()
@@ -28,26 +29,13 @@ class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>,oNodeKeys:ArrayList<Stri
     private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.my_food_info, parent, false) as View
+            .inflate(R.layout.my_recipe_info, parent, false) as View
         return MyFoodViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as MyFoodViewHolder
-        val oNutrients: Nutrients = food[position].nutrients!!
-        holder.myFoodName.text = food[position].label
-        holder.myCategoryName.text = food[position].category
-        holder.btnDeleteFood.tag=nodeValue[position]
-        holder.btnMyFoodNutrients.setOnClickListener {
-            val modalBottomSheet = BottomSheetFragment()
-            val mBundle = Bundle()
-            mBundle.putSerializable("nutrients",oNutrients)
-            modalBottomSheet.arguments = mBundle
-            modalBottomSheet.show(context.supportFragmentManager, BottomSheetFragment.TAG)
-        }
-        holder.btnDeleteFood.setOnClickListener {
-            dbReference.child(mAuth.currentUser!!.uid).child("Food").child(holder.btnDeleteFood.tag.toString()).removeValue()
-        }
+
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -55,13 +43,10 @@ class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>,oNodeKeys:ArrayList<Stri
     }
     internal class MyFoodViewHolder(foodView: View) :
         RecyclerView.ViewHolder(foodView) {
-        var myFoodName: TextView = foodView.findViewById(R.id.txtMyFoodNameView)
-        var myCategoryName: TextView = foodView.findViewById(R.id.txtMyCategoryNameView)
-        var btnMyFoodNutrients: Button = foodView.findViewById(R.id.myFoodNutrientsBtn)
-        var btnDeleteFood:ImageButton=foodView.findViewById(R.id.deleteFood)
+
     }
 
     override fun getItemCount(): Int {
-        return food.size
+        return 0
     }
 }
