@@ -1,6 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:id="@+id/txtMyRecipeName"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="60dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtMyRecipeNameView"
+            android:enabled="false"
+            android:hint="Recipe name"
+            android:gravity="center"
+            android:textColor="@color/black"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/txtMyRecipeName"
+        android:layout_marginTop="8dp"
+        android:hint="Ingredients"
+        android:textColorHint="@color/white"
+        android:id="@+id/btnRecipeIngr"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/txtMyRecipeName"/>
+    <CheckBox android:id="@+id/starRecipe"
+        app:useMaterialThemeColors="false"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintStart_toEndOf="@+id/txtMyRecipeName"
+        app:layout_constraintBottom_toBottomOf="@+id/btnRecipeIngr"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:button="@drawable/checkbox"
+        android:textColor="@color/black"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,7 +21,7 @@ import java.util.ArrayList
 import java.util.concurrent.Executors
 
 class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>,oNodeKeys:ArrayList<String>, context: AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var food: ArrayList<Recipe> = oRecipe
+    private var recipes: ArrayList<Recipe> = oRecipe
     private var nodeValue:ArrayList<String> = oNodeKeys
     private var context:AppCompatActivity = context
     private var database:FirebaseDatabase= FirebaseDatabase.getInstance()
@@ -30,18 +30,18 @@ class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>,oNodeKeys:ArrayLis
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.my_recipe_info, parent, false) as View
-        return MyFoodViewHolder(view)
+        return MyRecipeViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        val holder = viewHolder as MyFoodViewHolder
+        val holder = viewHolder as MyRecipeViewHolder
 
     }
 
     override fun getItemViewType(position: Int): Int {
         return position
     }
-    internal class MyFoodViewHolder(foodView: View) :
+    internal class MyRecipeViewHolder(foodView: View) :
         RecyclerView.ViewHolder(foodView) {
 
     }

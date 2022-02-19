@@ -60,15 +60,11 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.ingredientPage -> {
-                    fm.beginTransaction().hide(active).show(fragment2).addToBackStack( "fragment2" ).commit()
+                    fm.beginTransaction().hide(active).show(fragment2).commit()
                     active = fragment2
                     findViewById<FloatingActionButton>(R.id.floatingBtnRecipe).setOnClickListener{
-                        fm.beginTransaction().hide(active).show(fragment5).addToBackStack( "fragment5" ).commit()
+                        fm.beginTransaction().hide(active).show(fragment5).commit()
                         active = fragment5
-                        findViewById<Button>(R.id.addIngredient).setOnClickListener{
-                            fm.beginTransaction().hide(active).show(fragment4).addToBackStack( "fragment4" ).commit()
-                            active = fragment4
-                        }
                     }
                     return@OnNavigationItemSelectedListener true
                 }
@@ -129,16 +125,10 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
         }
 
     override fun onBackPressed() {
-        if(fm.backStackEntryCount==0)
-        {
             val a = Intent(Intent.ACTION_MAIN)
             a.addCategory(Intent.CATEGORY_HOME)
             a.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(a)
-        }
-        else{
-            super.onBackPressed()
-        }
     }
     override fun onResponse(@NonNull call: Call<HintsResults>, @NonNull response: Response<HintsResults>) {
         if (response.isSuccessful && response.body() != null) {
