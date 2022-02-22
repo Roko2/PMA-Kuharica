@@ -27,27 +27,16 @@ import java.util.*
 
 
 class IngredientFragment : Fragment() {
-    var ingredientListener: IngredientInterface? = null
-    private val rotateOpen: Animation by lazy{ AnimationUtils.loadAnimation(context,R.anim.rotate_open_anim)}
-    private val rotateClose: Animation by lazy{ AnimationUtils.loadAnimation(context,R.anim.rotate_close_anim)}
-    private val fromBottom: Animation by lazy{ AnimationUtils.loadAnimation(context,R.anim.from_bottom_anim)}
-    private val toBottom: Animation by lazy{ AnimationUtils.loadAnimation(context,R.anim.to_bottom_anim)}
-    private val fragmentAddRecipe: Fragment = AddRecipeFragment()
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
+    private var mLayoutManager: RecyclerView.LayoutManager? = null
     val foodList: MutableList<Food> = mutableListOf()
     val recipeList:MutableList<Recipe> = mutableListOf()
     val nodeValue:MutableList<String> = mutableListOf()
     private var database:FirebaseDatabase=FirebaseDatabase.getInstance()
     private var dbReference: DatabaseReference=database.reference
     private val mAuth: FirebaseAuth=FirebaseAuth.getInstance()
-    private var mLayoutManager: RecyclerView.LayoutManager? = null
-    private var clicked=false
     private var btnFood: FloatingActionButton? = null
-    private var btnRecipe : FloatingActionButton? = null
-    private var txtFoodFloating: TextView? =null
-    private var txtRecipeFloating: TextView? =null
-    private var openFloatingButtons:FloatingActionButton?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -61,7 +50,6 @@ class IngredientFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        ingredientListener = null
     }
 
     companion object {
@@ -75,14 +63,7 @@ class IngredientFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        openFloatingButtons=view.findViewById(R.id.btnShowDialog)
         btnFood= view.findViewById(R.id.floatingBtnFood)
-        btnRecipe=view.findViewById(R.id.floatingBtnRecipe)
-        txtFoodFloating=view.findViewById(R.id.addFoodTxt)
-        txtRecipeFloating=view.findViewById(R.id.addRecipeTxt)
-        openFloatingButtons?.setOnClickListener{
-            onAddButtonClicked()
-        }
         btnFood?.setOnClickListener{
             showCustomDialogFood()
         }
@@ -116,41 +97,6 @@ class IngredientFragment : Fragment() {
                 else{
                     view.findViewById<RecyclerView>(R.id.recyclerViewMyFood).visibility=View.INVISIBLE
                     view.findViewById<TextView>(R.id.myFoodEmpty).visibility=View.VISIBLE
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        })
-
-
-        val dbRecipe:DatabaseReference = dbReference.child(mAuth.currentUser!!.uid).child("Recipe")
-
-        dbRecipe.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for(postSnapshot in snapshot.children){
-                    if (postSnapshot.value != null) {
-
-                    }
-                }
-                if(recipeList.size>0) {
-                    view.findViewById<RecyclerView>(R.id.recyclerViewMyRecipe).visibility=View.VISIBLE
-                    view.findViewById<TextView>(R.id.myRecipeEmpty).visibility=View.INVISIBLE
-                    mRecyclerView =
-                        view.findViewById<View>(R.id.recyclerViewMyRecipe) as RecyclerView?
-                    mLayoutManager = LinearLayoutManager(context)
-                    mRecyclerView!!.layoutManager = mLayoutManager
-                    mAdapter = MyRecipeRecyclerViewAdapter(
-                        recipeList as ArrayList<Recipe>,
-                        nodeValue as ArrayList<String>,
-                        context as AppCompatActivity
-                    )
-                    mRecyclerView!!.adapter = mAdapter
-                }
-                else{
-                    view.findViewById<RecyclerView>(R.id.recyclerViewMyRecipe).visibility=View.INVISIBLE
-                    view.findViewById<TextView>(R.id.myRecipeEmpty).visibility=View.VISIBLE
                 }
             }
 
@@ -203,51 +149,6 @@ class IngredientFragment : Fragment() {
             mRecyclerView!!.layoutManager = mLayoutManager
             mAdapter = MyFoodRecyclerViewAdapter(foodList as ArrayList<Food>,nodeValue as ArrayList<String>, context as AppCompatActivity)
             mRecyclerView!!.adapter = mAdapter
-            onAddButtonClicked()
-        }
-    }
-    private fun onAddButtonClicked() {
-        setVisibility(clicked)
-        setAnimation(clicked)
-        setClickable(clicked)
-        clicked = !clicked
-    }
-    private fun setVisibility(clicked:Boolean){
-    if(!clicked){
-        btnFood?.visibility=View.VISIBLE
-        btnRecipe?.visibility=View.VISIBLE
-        txtFoodFloating?.visibility=View.VISIBLE
-        txtRecipeFloating?.visibility=View.VISIBLE
-    }else{
-        btnFood?.visibility=View.INVISIBLE
-        btnRecipe?.visibility=View.INVISIBLE
-        txtFoodFloating?.visibility=View.INVISIBLE
-        txtRecipeFloating?.visibility=View.INVISIBLE
-        }
-    }
-    private fun setAnimation(clicked: Boolean){
-    if(!clicked){
-        btnFood?.startAnimation(fromBottom)
-        btnRecipe?.startAnimation(fromBottom)
-        txtFoodFloating?.startAnimation(fromBottom)
-        txtRecipeFloating?.startAnimation(fromBottom)
-        openFloatingButtons?.startAnimation(rotateOpen)
-    }else{
-        btnFood?.startAnimation(toBottom)
-        btnRecipe?.startAnimation(toBottom)
-        txtFoodFloating?.startAnimation(toBottom)
-        txtRecipeFloating?.startAnimation(toBottom)
-        openFloatingButtons?.startAnimation(rotateClose)
-    }
-    }
-
-    private fun setClickable(clicked: Boolean){
-        if(!clicked){
-            btnFood?.isClickable=true
-            btnRecipe?.isClickable=true
-        }else{
-            btnFood?.isClickable=false
-            btnRecipe?.isClickable=false
         }
     }
 }

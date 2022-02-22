@@ -1,3 +1,7 @@
 package com.example.pma_kuharica.interfaces
 
-interface IngredientInterface
+import com.example.pma_kuharica.classes.Food
+
+interface IngredientInterface{
+    fun GetIngredient(oFood:Food)
+}

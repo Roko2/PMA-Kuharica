@@ -10,21 +10,23 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pma_kuharica.R
-import com.example.pma_kuharica.classes.Food
 import com.example.pma_kuharica.classes.Hint
 import com.example.pma_kuharica.classes.Nutrients
 import com.example.pma_kuharica.fragments.BottomSheetFragment
+import com.example.pma_kuharica.interfaces.IngredientInterface
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import java.util.ArrayList
+import java.util.*
 import java.util.concurrent.Executors
 
-class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompatActivity,listener: IngredientInterface?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var food: ArrayList<Hint> = oFood
     private var context:AppCompatActivity = context
     private var database:FirebaseDatabase= FirebaseDatabase.getInstance()
     private var dbReference=database.reference
     private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private var adapterIngredient: IngredientInterface? = listener
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.ingredient_search_info, parent, false) as View
@@ -36,6 +38,10 @@ class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompat
         val oNutrients: Nutrients = food[position].food?.nutrients!!
         holder.myFoodSearchName.text = food[position].food?.label
         holder.myCategorySearchName.text = food[position].food?.category
+        holder.btnAddIngr.setOnClickListener {
+            Toast.makeText(context, "Ingredient is added", Toast.LENGTH_SHORT).show()
+            adapterIngredient?.GetIngredient(food[position].food!!)
+        }
         val executor = Executors.newSingleThreadExecutor()
         var image: Bitmap? = null
         executor.execute {
@@ -70,6 +76,8 @@ class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompat
         var btnMyFoodSearchNutrients: Button = foodView.findViewById(R.id.myFoodNutrientsBtnSearch)
         var myFoodSearchImage:ImageView=foodView.findViewById(R.id.foodImageSearch)
         var btnAddIngr:ImageButton=foodView.findViewById(R.id.addIngr)
+        //podaci za objekt idu u bind
+
     }
 
     override fun getItemCount(): Int {

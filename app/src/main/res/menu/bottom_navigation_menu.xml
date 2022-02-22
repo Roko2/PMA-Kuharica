@@ -8,6 +8,11 @@
     <item
         android:id="@+id/ingredientPage"
         android:enabled="true"
+        android:icon="@drawable/ic_food"
+        android:title="Food"/>
+    <item
+        android:id="@+id/foodPage"
+        android:enabled="true"
         android:icon="@drawable/ic_action_ingredient"
         android:title="Recipe"/>
     <item

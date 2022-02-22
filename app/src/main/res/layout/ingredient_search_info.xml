@@ -56,10 +56,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="NUTRIENTS"
-        android:layout_marginStart="35dp"
-        android:layout_marginEnd="35dp"
+        android:layout_marginEnd="25dp"
         android:layout_marginTop="8dp"
         android:textColorHint="@color/white"
+        android:backgroundTint="@color/lightGreen"
         app:layout_constraintTop_toBottomOf="@+id/txtMyCategoryNameSearch"
         app:layout_constraintEnd_toEndOf="@id/txtMyCategoryNameSearch"/>
 

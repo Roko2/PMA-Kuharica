@@ -4,9 +4,10 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.SearchView
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.pma_kuharica.api.ApiManager
 import com.example.pma_kuharica.classes.HintsResults
-import com.example.pma_kuharica.classes.Ingredient
 import com.example.pma_kuharica.fragments.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -24,10 +24,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.Serializable
 
 
 class MainActivity : AppCompatActivity(), Callback<HintsResults> {
@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
     val fragment3: Fragment = InfoFragment()
     val fragment4: Fragment = SearchFragment()
     val fragment5: Fragment = AddRecipeFragment()
+    val fragment6: Fragment = FoodFragment()
     val fm: FragmentManager = supportFragmentManager
     var active: Fragment = fragment1
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
         setContentView(R.layout.activity_main)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         fm.beginTransaction().add(R.id.fragmentContainerView, fragment5, "5").hide(fragment5).commit()
-//        fm.beginTransaction().add(R.id.fragmentContainerView, fragment4, "4").hide(fragment4).commit()
+        fm.beginTransaction().add(R.id.fragmentContainerView, fragment6, "6").hide(fragment6).commit()
         fm.beginTransaction().add(R.id.fragmentContainerView, fragment3, "3").hide(fragment3).commit()
         fm.beginTransaction().add(R.id.fragmentContainerView, fragment2, "2").hide(fragment2).commit()
         fm.beginTransaction().add(R.id.fragmentContainerView,fragment1, "1").commit()
@@ -62,15 +63,20 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
                 R.id.ingredientPage -> {
                     fm.beginTransaction().hide(active).show(fragment2).commit()
                     active = fragment2
-                    findViewById<FloatingActionButton>(R.id.floatingBtnRecipe).setOnClickListener{
-                        fm.beginTransaction().hide(active).show(fragment5).commit()
-                        active = fragment5
-                    }
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.infoPage -> {
                     fm.beginTransaction().hide(active).show(fragment3).commit()
                     active = fragment3
+                    return@OnNavigationItemSelectedListener true
+                }
+                R.id.foodPage -> {
+                    fm.beginTransaction().hide(active).show(fragment6).commit()
+                    active = fragment6
+                    findViewById<FloatingActionButton>(R.id.floatingBtnRecipe).setOnClickListener{
+                        fm.beginTransaction().hide(active).show(fragment5).commit()
+                        active = fragment5
+                    }
                     return@OnNavigationItemSelectedListener true
                 }
                 else -> true

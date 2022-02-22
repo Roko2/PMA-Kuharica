@@ -19,9 +19,9 @@ import com.google.firebase.database.FirebaseDatabase
 import java.util.ArrayList
 import java.util.concurrent.Executors
 
-class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>,oNodeKeys:ArrayList<String>, context: AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>,oNodeKeys:ArrayList<String>?, context: AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var food: ArrayList<Food> = oFood
-    private var nodeValue:ArrayList<String> = oNodeKeys
+    private var nodeValue:ArrayList<String>? = oNodeKeys
     private var context:AppCompatActivity = context
     private var database:FirebaseDatabase= FirebaseDatabase.getInstance()
     private var dbReference=database.reference
@@ -37,7 +37,7 @@ class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>,oNodeKeys:ArrayList<Stri
         val oNutrients: Nutrients = food[position].nutrients!!
         holder.myFoodName.text = food[position].label
         holder.myCategoryName.text = food[position].category
-        holder.btnDeleteFood.tag=nodeValue[position]
+//        holder.btnDeleteFood.tag= nodeValue!![position]
         holder.btnMyFoodNutrients.setOnClickListener {
             val modalBottomSheet = BottomSheetFragment()
             val mBundle = Bundle()

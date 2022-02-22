@@ -20,9 +20,9 @@ import com.google.firebase.database.FirebaseDatabase
 import java.util.ArrayList
 import java.util.concurrent.Executors
 
-class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>,oNodeKeys:ArrayList<String>, context: AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>,oNodeKeys:ArrayList<String>?, context: AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var recipes: ArrayList<Recipe> = oRecipe
-    private var nodeValue:ArrayList<String> = oNodeKeys
+    private var nodeValue:ArrayList<String>? = oNodeKeys
     private var context:AppCompatActivity = context
     private var database:FirebaseDatabase= FirebaseDatabase.getInstance()
     private var dbReference=database.reference
