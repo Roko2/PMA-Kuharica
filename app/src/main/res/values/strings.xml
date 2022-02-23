@@ -8,5 +8,10 @@
         <item>Packaged-foods</item>
         <item>Fast-foods</item>
     </string-array>
-
+    <string name="recommended">
+        <u>Recommended for you</u>
+    </string>
+    <string name="searchItems">
+       milk,egg,bread,water,chocolate,pizza,tomato,orange,apple,flour,honey,coffee,beef
+    </string>
 </resources>

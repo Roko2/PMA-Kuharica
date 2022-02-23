@@ -3,6 +3,8 @@ package com.example.pma_kuharica
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pma_kuharica.classes.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -36,7 +38,9 @@ class LoginActivity : AppCompatActivity() {
         database = Firebase.database.reference
         val gumbPrijava=findViewById<SignInButton>(R.id.sign_in_button)
         gumbPrijava.setSize(SignInButton.SIZE_WIDE)
-        gumbPrijava.setOnClickListener{signIn()}
+        gumbPrijava.setOnClickListener{
+            signIn()
+        }
     }
 
     override fun onStart() {
@@ -47,17 +51,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        findViewById<ProgressBar>(R.id.progressBarLogin).visibility=View.VISIBLE
         super.onActivityResult(requestCode, resultCode, data)
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
             }
         }
@@ -68,6 +69,7 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                    findViewById<ProgressBar>(R.id.progressBarLogin).visibility=View.INVISIBLE
                     val user = auth.currentUser
                     updateUI(user)
                 } else {
@@ -84,7 +86,7 @@ class LoginActivity : AppCompatActivity() {
      private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
+     }
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {

@@ -25,10 +25,11 @@
         <TextView
             android:id="@+id/txtHomeHeading"
             android:layout_width="wrap_content"
+            android:fontFamily="cursive"
             android:layout_height="wrap_content"
             android:layout_marginTop="145dp"
             android:text="Welcome to your cookbook"
-            android:textSize="18dp"
+            android:textSize="23dp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:alpha="255"
@@ -38,23 +39,40 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/txtHomeCursive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:layout_marginEnd="16dp"
+            android:alpha="255"
+            android:fontFamily="cursive"
+            android:text="Taste of greatness"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtHomeHeading" />
+
+        <TextView
             android:id="@+id/txtRecommended"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recommended for you"
+            android:text="@string/recommended"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView"
             android:layout_marginLeft="16dp"
             android:textSize="16dp"
             android:textStyle="bold"
             android:layout_marginTop="16dp"></TextView>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewRecommendedRecipes"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtRecommended"
-            android:layout_marginTop="5dp"></androidx.recyclerview.widget.RecyclerView>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtRecommended"></androidx.recyclerview.widget.RecyclerView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

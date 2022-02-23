@@ -3,12 +3,14 @@ package com.example.pma_kuharica
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.SearchView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -24,7 +26,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,6 +34,7 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity(), Callback<HintsResults> {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var hintData: HintsResults
+    private var toastShowed:Boolean=false
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     val fragment1: Fragment = HomeFragment()
     val fragment2: Fragment = IngredientFragment()
@@ -100,6 +102,21 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
+                    if(!toastShowed) {
+                        val inflater = layoutInflater
+                        val layout: View = inflater.inflate(
+                            R.layout.search_toast, null
+                        )
+                        val text: TextView = layout.findViewById(R.id.toastTxt)
+                        text.text = "You can search multiple things etc. milk,egg,bread"
+
+                        val toast = Toast(applicationContext)
+                        toast.setGravity(Gravity.TOP, 0, 200)
+                        toast.duration = Toast.LENGTH_LONG
+                        toast.view = layout
+                        toast.show()
+                        toastShowed=true
+                    }
                     return false
                 }
             }
@@ -163,7 +180,21 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
             imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
         }
     }
-
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val v: View? = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
+    }
     override fun onFailure(call: Call<HintsResults>, t: Throwable) {
         t.printStackTrace()
     }
