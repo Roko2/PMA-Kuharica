@@ -30,11 +30,11 @@ class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompat
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.ingredient_search_info, parent, false) as View
-        return MyFoodViewHolder(view)
+        return IngredientViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        val holder = viewHolder as MyFoodViewHolder
+        val holder = viewHolder as IngredientViewHolder
         val oNutrients: Nutrients = food[position].food?.nutrients!!
         holder.myFoodSearchName.text = food[position].food?.label
         holder.myCategorySearchName.text = food[position].food?.category
@@ -69,7 +69,7 @@ class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompat
     override fun getItemViewType(position: Int): Int {
         return position
     }
-    internal class MyFoodViewHolder(foodView: View) :
+    internal class IngredientViewHolder(foodView: View) :
         RecyclerView.ViewHolder(foodView) {
         var myFoodSearchName: TextView = foodView.findViewById(R.id.txtMyFoodNameViewSearch)
         var myCategorySearchName: TextView = foodView.findViewById(R.id.txtMyCategoryNameViewSearch)

@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -15,6 +17,7 @@ import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.example.pma_kuharica.api.ApiManager
 import com.example.pma_kuharica.classes.HintsResults
 import com.example.pma_kuharica.fragments.*
@@ -26,6 +29,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,8 +42,8 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
     private lateinit var hintData: HintsResults
     private var toastShowed:Boolean=false
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-    val fragment1: Fragment = HomeFragment()
     val fragment2: Fragment = IngredientFragment()
+    val fragment1: Fragment = HomeFragment()
     val fragment3: Fragment = InfoFragment()
     val fragment4: Fragment = SearchFragment()
     val fragment5: Fragment = AddRecipeFragment()
@@ -48,11 +54,12 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        fm.beginTransaction().add(R.id.fragmentContainerView,fragment1, "1").commit()
+        fm.beginTransaction().add(R.id.fragmentContainerView, fragment2, "2").hide(fragment2).commit()
         fm.beginTransaction().add(R.id.fragmentContainerView, fragment5, "5").hide(fragment5).commit()
         fm.beginTransaction().add(R.id.fragmentContainerView, fragment6, "6").hide(fragment6).commit()
         fm.beginTransaction().add(R.id.fragmentContainerView, fragment3, "3").hide(fragment3).commit()
-        fm.beginTransaction().add(R.id.fragmentContainerView, fragment2, "2").hide(fragment2).commit()
-        fm.beginTransaction().add(R.id.fragmentContainerView,fragment1, "1").commit()
         val bottomNavigationView:BottomNavigationView=findViewById(R.id.bottom_navigation)
         bottomNavigationView.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
             val id = menuItem.itemId

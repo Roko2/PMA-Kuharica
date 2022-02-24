@@ -1,6 +1,7 @@
 package com.example.pma_kuharica.fragments
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.animation.Animation
@@ -90,7 +91,8 @@ class IngredientFragment : Fragment() {
                     mAdapter = MyFoodRecyclerViewAdapter(
                         foodList as ArrayList<Food>,
                         nodeValue as ArrayList<String>,
-                        context as AppCompatActivity
+                        context as AppCompatActivity,
+                        true
                     )
                     mRecyclerView!!.adapter = mAdapter
                 }
@@ -147,7 +149,7 @@ class IngredientFragment : Fragment() {
             mRecyclerView = view?.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
             mLayoutManager = LinearLayoutManager(context)
             mRecyclerView!!.layoutManager = mLayoutManager
-            mAdapter = MyFoodRecyclerViewAdapter(foodList as ArrayList<Food>,nodeValue as ArrayList<String>, context as AppCompatActivity)
+            mAdapter = MyFoodRecyclerViewAdapter(foodList as ArrayList<Food>,nodeValue as ArrayList<String>, context as AppCompatActivity,true)
             mRecyclerView!!.adapter = mAdapter
         }
     }

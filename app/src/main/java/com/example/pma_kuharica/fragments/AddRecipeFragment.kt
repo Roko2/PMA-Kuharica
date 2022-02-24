@@ -77,7 +77,8 @@ class AddRecipeFragment : Fragment() {
         mAdapter = MyFoodRecyclerViewAdapter(
             ingredientList as ArrayList<Food>,
             nodeValue,
-            context as AppCompatActivity
+            context as AppCompatActivity,
+            false
         )
         mRecyclerView!!.adapter = mAdapter
         view?.findViewById<ProgressBar>(R.id.progress)?.visibility=View.GONE

@@ -71,7 +71,8 @@ class BottomSheetIngredients : BottomSheetDialogFragment() {
                     mAdapter = MyFoodRecyclerViewAdapter(
                         food as ArrayList<Food>,
                         nodeValue as ArrayList<String>,
-                        context as AppCompatActivity
+                        context as AppCompatActivity,
+                        true
                     )
                     mRecyclerView!!.adapter = mAdapter
                 }

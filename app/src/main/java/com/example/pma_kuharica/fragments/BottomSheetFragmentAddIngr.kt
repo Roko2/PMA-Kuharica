@@ -41,7 +41,6 @@ class BottomSheetFragmentAddIngr : BottomSheetDialogFragment(), Callback<HintsRe
 
     override fun onDestroy() {
         super.onDestroy()
-        //mozda interface treba u null?
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

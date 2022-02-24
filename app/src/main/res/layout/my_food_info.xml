@@ -64,4 +64,5 @@
         app:useMaterialThemeColors="false"
         android:layout_marginEnd="30dp"
         android:background="@drawable/ic_trash" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
