@@ -14,6 +14,7 @@ import com.example.pma_kuharica.R
 import com.example.pma_kuharica.classes.Hint
 import com.example.pma_kuharica.classes.Nutrients
 import com.example.pma_kuharica.fragments.BottomSheetFragment
+import com.squareup.picasso.Picasso
 import java.util.ArrayList
 import java.util.concurrent.Executors.*
 
@@ -40,20 +41,11 @@ class FoodRecyclerViewAdapter(foodList: ArrayList<Hint>, context:AppCompatActivi
             modalBottomSheet.arguments = mBundle
             modalBottomSheet.show(context.supportFragmentManager, BottomSheetFragment.TAG)
         }
-        val executor = newSingleThreadExecutor()
-        var image: Bitmap? = null
-        executor.execute {
-            try {
-                if (oFood.food.image == null || oFood.food.image == "") {
-                    holder.foodImage.setImageResource(R.drawable.ic_noimage)
-                } else {
-                    val `in` = java.net.URL(oFood.food.image).openStream()
-                    image = BitmapFactory.decodeStream(`in`)
-                    holder.foodImage.setImageBitmap(image)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+
+        if (oFood.food.image.isNullOrEmpty()) {
+            holder.foodImage.setImageResource(R.drawable.ic_noimage)
+        } else {
+            Picasso.get().load(oFood.food.image.toString()).into(holder.foodImage);
         }
     }
 

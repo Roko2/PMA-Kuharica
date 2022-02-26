@@ -25,7 +25,8 @@ class SearchFragment : Fragment(), Callback<HintsResults> {
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
     private var mLayoutManager: RecyclerView.LayoutManager? = null
-
+    private var nextHintData:HintsResults?=null
+    private lateinit var hintList:HintsResults
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -41,7 +42,7 @@ class SearchFragment : Fragment(), Callback<HintsResults> {
         super.onViewCreated(view, savedInstanceState)
         val btnNext = getView()?.findViewById<Button>(R.id.btnNext)
 
-        var hintList = arguments?.getSerializable(
+        hintList = arguments?.getSerializable(
             "mResults"
         ) as HintsResults
 
@@ -52,7 +53,7 @@ class SearchFragment : Fragment(), Callback<HintsResults> {
             getView()?.findViewById<TextView>(R.id.txtViewSearchMsg)?.text = "Search results"
             btnNext?.visibility = VISIBLE
             btnNext?.setOnClickListener {
-                var apiUrl: String = hintList.mNextPage?.next?.href.toString()
+                val apiUrl: String = hintList.mNextPage?.next?.href.toString()
                 val substringApi: String = apiUrl.subSequence(22, apiUrl.lastIndex + 1).toString()
                 ApiManager.getNewInstance()?.service()?.getFood(substringApi)?.enqueue(this)
             }
@@ -78,11 +79,12 @@ class SearchFragment : Fragment(), Callback<HintsResults> {
 
     override fun onResponse(call: Call<HintsResults>, response: Response<HintsResults>) {
         if (response.isSuccessful && response.body() != null) {
-            var nextHintData:HintsResults = response.body()!!
+             nextHintData = response.body()!!
+            hintList= nextHintData as HintsResults
             mRecyclerView = view?.findViewById<View>(R.id.recyclerViewFood) as RecyclerView?
             mLayoutManager = LinearLayoutManager(context)
             mRecyclerView!!.layoutManager = mLayoutManager
-            mAdapter = FoodRecyclerViewAdapter(nextHintData.mResults!!, context as AppCompatActivity)
+            mAdapter = FoodRecyclerViewAdapter(nextHintData!!.mResults!!, context as AppCompatActivity)
             mRecyclerView!!.adapter = mAdapter
               }
             }

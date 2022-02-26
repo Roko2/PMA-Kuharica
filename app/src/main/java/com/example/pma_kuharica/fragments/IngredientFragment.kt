@@ -33,7 +33,6 @@ class IngredientFragment : Fragment() {
     private var mLayoutManager: RecyclerView.LayoutManager? = null
     val foodList: MutableList<Food> = mutableListOf()
     val recipeList:MutableList<Recipe> = mutableListOf()
-    val nodeValue:MutableList<String> = mutableListOf()
     private var database:FirebaseDatabase=FirebaseDatabase.getInstance()
     private var dbReference: DatabaseReference=database.reference
     private val mAuth: FirebaseAuth=FirebaseAuth.getInstance()
@@ -73,11 +72,9 @@ class IngredientFragment : Fragment() {
         db.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 foodList.clear()
-                nodeValue.clear()
                 for(postSnapshot in snapshot.children){
                     if (postSnapshot.value != null) {
                                 val storedFood: Food? = postSnapshot.getValue<Food>()
-                                nodeValue.add(postSnapshot.key.toString())
                                 foodList.add(storedFood!!)
                             }
                 }
@@ -90,7 +87,6 @@ class IngredientFragment : Fragment() {
                     mRecyclerView!!.layoutManager = mLayoutManager
                     mAdapter = MyFoodRecyclerViewAdapter(
                         foodList as ArrayList<Food>,
-                        nodeValue as ArrayList<String>,
                         context as AppCompatActivity,
                         true
                     )
@@ -126,7 +122,9 @@ class IngredientFragment : Fragment() {
         )
         spinner?.adapter=adapter
         window2?.findViewById<Button>(R.id.addFood)?.setOnClickListener{
-            val randFoodId=UUID.randomUUID().toString()
+            val userFirebase: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+
+            val newNode=dbReference.child(userFirebase!!.uid).child("Food").push().key.toString()
             val foodChocdf=if(window2.findViewById<TextInputLayout>(R.id.foodCarb).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodCarb).editText?.text.toString().toDouble()
             val foodEnerc_KCAL=if(window2.findViewById<TextInputLayout>(R.id.foodEnergy).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodEnergy).editText?.text.toString().toDouble()
             val foodFat=if(window2.findViewById<TextInputLayout>(R.id.foodFat).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodFat).editText?.text.toString().toDouble()
@@ -138,10 +136,7 @@ class IngredientFragment : Fragment() {
                                     fibtg  =foodFibtg,
                                     procnt = foodProcnt)
 
-            val food=Food(label = window2.findViewById<TextInputLayout>(R.id.foodName).editText?.text.toString(), category =spinner?.selectedItem.toString(), nutrients = nutrients, foodId = randFoodId, categoryLabel = "", foodContentsLabel = "", image = "")
-            val userFirebase: FirebaseUser? = FirebaseAuth.getInstance().currentUser
-            val newNode=dbReference.child(userFirebase!!.uid).child("Food").push().key.toString()
-            nodeValue.add(newNode)
+            val food=Food(label = window2.findViewById<TextInputLayout>(R.id.foodName).editText?.text.toString(), category =spinner?.selectedItem.toString(), nutrients = nutrients, foodId = newNode, categoryLabel = "", foodContentsLabel = "", image = "")
             dbReference.child(userFirebase.uid).child("Food").child(newNode).setValue(food)
             foodList.add(food)
             Toast.makeText(context, "Food is added", Toast.LENGTH_SHORT).show()
@@ -149,7 +144,7 @@ class IngredientFragment : Fragment() {
             mRecyclerView = view?.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
             mLayoutManager = LinearLayoutManager(context)
             mRecyclerView!!.layoutManager = mLayoutManager
-            mAdapter = MyFoodRecyclerViewAdapter(foodList as ArrayList<Food>,nodeValue as ArrayList<String>, context as AppCompatActivity,true)
+            mAdapter = MyFoodRecyclerViewAdapter(foodList as ArrayList<Food>, context as AppCompatActivity,true)
             mRecyclerView!!.adapter = mAdapter
         }
     }

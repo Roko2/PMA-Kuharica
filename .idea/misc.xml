@@ -18,6 +18,7 @@
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/drawable/ic_launcher_kuharica_background.xml" value="0.2703125" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/drawable/ic_recipe.xml" value="0.2703125" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/drawable/ic_trash.xml" value="0.197" />
+        <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/drawable/login_image.xml" value="0.208" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/drawable/mainheader.xml" value="0.240625" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/drawable/noimage.xml" value="0.24010416666666667" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/drawable/rounded.xml" value="0.208" />
@@ -35,6 +36,7 @@
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/fragment_bottom_sheet.xml" value="0.4" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/fragment_bottom_sheet_add_ingr.xml" value="0.2" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/fragment_bottom_sheet_ingredients.xml" value="0.2421875" />
+        <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/fragment_bottom_sheet_recipe_ingredients.xml" value="0.2421875" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/fragment_food.xml" value="0.2421875" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/fragment_home.xml" value="0.264" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/fragment_info.xml" value="0.223731884057971" />
@@ -43,7 +45,8 @@
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/home_page_info.xml" value="0.536" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/ingredient_search_info.xml" value="0.2421875" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/my_food_info.xml" value="0.24479166666666666" />
-        <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/my_recipe_info.xml" value="0.264" />
+        <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/my_recipe_info.xml" value="0.25" />
+        <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/recipe_ingredients_info.xml" value="0.2421875" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/layout/search_toast.xml" value="0.2421875" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Roko/Desktop/PMA-Kuharica/app/src/main/res/menu/toolbar_menu.xml" value="0.4" />

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pma_kuharica.classes.User
@@ -41,6 +42,9 @@ class LoginActivity : AppCompatActivity() {
         gumbPrijava.setOnClickListener{
             signIn()
         }
+        val headerImage=findViewById<ImageView>(R.id.mainImage)
+        headerImage.adjustViewBounds = true
+        headerImage.scaleType = ImageView.ScaleType.CENTER_CROP
     }
 
     override fun onStart() {

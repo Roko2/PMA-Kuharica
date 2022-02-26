@@ -8,25 +8,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pma_kuharica.R
+import com.example.pma_kuharica.classes.Food
 import com.example.pma_kuharica.classes.Hint
+import com.example.pma_kuharica.classes.IntentService
 import com.example.pma_kuharica.classes.Nutrients
 import com.example.pma_kuharica.fragments.BottomSheetFragment
+import com.example.pma_kuharica.fragments.HomeFragment
+import com.example.pma_kuharica.fragments.IngredientFragment.Companion.newInstance
 import com.example.pma_kuharica.interfaces.IngredientInterface
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.squareup.picasso.Picasso
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 import java.util.concurrent.Executors
 
-class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompatActivity,listener: IngredientInterface?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompatActivity,listener:IngredientInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var food: ArrayList<Hint> = oFood
     private var context:AppCompatActivity = context
     private var database:FirebaseDatabase= FirebaseDatabase.getInstance()
     private var dbReference=database.reference
+    private var IngredientListener:IngredientInterface=listener
     private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    private var adapterIngredient: IngredientInterface? = listener
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.ingredient_search_info, parent, false) as View
@@ -40,22 +46,13 @@ class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompat
         holder.myCategorySearchName.text = food[position].food?.category
         holder.btnAddIngr.setOnClickListener {
             Toast.makeText(context, "Ingredient is added", Toast.LENGTH_SHORT).show()
-            adapterIngredient?.GetIngredient(food[position].food!!)
+            IngredientListener.GetIngredient(food[position].food!!)
         }
-        val executor = Executors.newSingleThreadExecutor()
-        var image: Bitmap? = null
-        executor.execute {
-            try {
-                if (food[position].food?.image == null || food[position].food?.image == "") {
-                    holder.myFoodSearchImage.setImageResource(R.drawable.ic_noimage)
-                } else {
-                    val `in` = java.net.URL(food[position].food?.image).openStream()
-                    image = BitmapFactory.decodeStream(`in`)
-                    holder.myFoodSearchImage.setImageBitmap(image)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        if(food[position].food?.image.isNullOrEmpty()){
+           holder.myFoodSearchImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_noimage))
+        }
+        else {
+            Picasso.get().load(food[position].food?.image.toString()).into(holder.myFoodSearchImage)
         }
         holder.btnMyFoodSearchNutrients.setOnClickListener {
             val modalBottomSheet = BottomSheetFragment()
@@ -76,8 +73,6 @@ class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompat
         var btnMyFoodSearchNutrients: Button = foodView.findViewById(R.id.myFoodNutrientsBtnSearch)
         var myFoodSearchImage:ImageView=foodView.findViewById(R.id.foodImageSearch)
         var btnAddIngr:ImageButton=foodView.findViewById(R.id.addIngr)
-        //podaci za objekt idu u bind
-
     }
 
     override fun getItemCount(): Int {

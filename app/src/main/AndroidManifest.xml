@@ -27,7 +27,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:keepScreenOn="true"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".LoginActivity"
             android:exported="true">

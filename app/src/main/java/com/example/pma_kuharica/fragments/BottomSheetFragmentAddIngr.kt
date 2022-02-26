@@ -1,7 +1,6 @@
 package com.example.pma_kuharica.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -54,7 +53,7 @@ class BottomSheetFragmentAddIngr : BottomSheetDialogFragment(), Callback<HintsRe
         view.findViewById<ProgressBar>(R.id.progress).visibility=View.GONE
         view.findViewById<Button>(R.id.btnSearchIngr).setOnClickListener {
             val query=view.findViewById<TextInputLayout>(R.id.inptSearchIngr).editText?.text.toString()
-            if(query!="") {
+            if(query.isNotEmpty()) {
                 view.findViewById<ProgressBar>(R.id.progress).visibility=View.VISIBLE
                 val apiUrl: String = String.format(
                     "/api/food-database/v2/parser?app_id=0fe8f86d&app_key=875e22c3d3ec38bd2453e0223a451f16&ingr=%s",
@@ -74,7 +73,6 @@ class BottomSheetFragmentAddIngr : BottomSheetDialogFragment(), Callback<HintsRe
 
     override fun onResponse(call: Call<HintsResults>, response: Response<HintsResults>) {
         if (response.isSuccessful && response.body() != null) {
-            ingredientList.clear()
             foodData = response.body()!!
             mRecyclerView = view?.findViewById<View>(R.id.recyclerViewSearchIngr) as RecyclerView?
             mLayoutManager = LinearLayoutManager(context)
@@ -88,14 +86,14 @@ class BottomSheetFragmentAddIngr : BottomSheetDialogFragment(), Callback<HintsRe
         }
     }
 
-    override fun GetIngredient(oFood: Food) {
-        EventBus.getDefault().post(IntentService(1, oFood))
-        this.dismiss()
-    }
     override fun onFailure(call: Call<HintsResults>, t: Throwable) {
         t.printStackTrace()
     }
     companion object {
         const val TAG = "ModalBottomSheet"
+    }
+    override fun GetIngredient(oFood: Food) {
+        EventBus.getDefault().post(IntentService(1, oFood))
+        this.dismiss()
     }
 }

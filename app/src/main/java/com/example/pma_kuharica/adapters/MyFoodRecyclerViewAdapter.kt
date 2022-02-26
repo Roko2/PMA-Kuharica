@@ -1,29 +1,24 @@
 package com.example.pma_kuharica.adapters
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pma_kuharica.R
 import com.example.pma_kuharica.classes.Food
-import com.example.pma_kuharica.classes.Hint
 import com.example.pma_kuharica.classes.Nutrients
 import com.example.pma_kuharica.fragments.BottomSheetFragment
-import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import java.util.ArrayList
-import java.util.concurrent.Executors
 
-class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>,oNodeKeys:ArrayList<String>?, context: AppCompatActivity,isRecipeFoodUpdate:Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>, context: AppCompatActivity,isRecipeFoodUpdate:Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var food: ArrayList<Food> = oFood
     private var bIsRecipeFoodUpdate:Boolean=isRecipeFoodUpdate
-    private var nodeValue:ArrayList<String>? = oNodeKeys
     private var context:AppCompatActivity = context
     private var database:FirebaseDatabase= FirebaseDatabase.getInstance()
     private var dbReference=database.reference
@@ -40,17 +35,14 @@ class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>,oNodeKeys:ArrayList<Stri
         holder.myFoodName.text = food[position].label
         holder.myCategoryName.text = food[position].category
         if(bIsRecipeFoodUpdate) {
-            holder.btnDeleteFood.tag = nodeValue!![position]
             holder.btnDeleteFood.setOnClickListener {
-                dbReference.child(mAuth.currentUser!!.uid).child("Food").child(holder.btnDeleteFood.tag.toString()).removeValue()
+                dbReference.child(mAuth.currentUser!!.uid).child("Food").child(food[holder.adapterPosition].foodId).removeValue()
             }
         }
         else{
             holder.btnDeleteFood.setOnClickListener {
-                val result = food.toMutableList()
-                result.removeAt(holder.adapterPosition)
-                notifyItemRemoved(holder.adapterPosition);
-                notifyItemRangeChanged(holder.adapterPosition,food.size);
+                food.removeAt(holder.adapterPosition)
+                notifyItemRemoved(holder.adapterPosition)
             }
         }
         holder.btnMyFoodNutrients.setOnClickListener {

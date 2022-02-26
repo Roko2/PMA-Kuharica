@@ -5,22 +5,18 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.SearchView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import com.example.pma_kuharica.api.ApiManager
 import com.example.pma_kuharica.classes.HintsResults
+import com.example.pma_kuharica.classes.MainService
 import com.example.pma_kuharica.fragments.*
+import com.example.pma_kuharica.interfaces.MainInterface
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -29,19 +25,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity(), Callback<HintsResults> {
-    private lateinit var mAuth: FirebaseAuth
     private lateinit var hintData: HintsResults
-    private var toastShowed:Boolean=false
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
     val fragment2: Fragment = IngredientFragment()
     val fragment1: Fragment = HomeFragment()
     val fragment3: Fragment = InfoFragment()
@@ -92,13 +85,34 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
             }
         })
     }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun doThis(intentServiceResult: MainService) {
+        fm.beginTransaction().hide(active).show(fragment6).commit()
+        active = fragment6
+    }
 
     override fun onCreateOptionsMenu(menu: Menu) : Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
-        var searchViewItem:MenuItem=menu.findItem(R.id.action_search)
-        var searchManager:SearchManager= getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        var searchView: SearchView =searchViewItem.actionView as SearchView
+        val searchViewItem:MenuItem=menu.findItem(R.id.action_search)
+        val searchManager:SearchManager= getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchView: SearchView =searchViewItem.actionView as SearchView
         searchView.queryHint = "Search for ingredient or food..."
+        searchView.setOnQueryTextFocusChangeListener { view, isFocused ->
+            val toast = Toast(applicationContext)
+            if (isFocused) {
+                val inflater = layoutInflater
+                val layout: View = inflater.inflate(
+                    R.layout.search_toast, null
+                )
+                val text: TextView = layout.findViewById(R.id.toastTxt)
+                text.text = "You can search multiple things etc. milk,egg,bread"
+                toast.setGravity(Gravity.TOP, 0, 200)
+                toast.duration=Toast.LENGTH_LONG
+                toast.view = layout
+                toast.show()
+            }
+        }
+
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         val queryTextListener: SearchView.OnQueryTextListener =
             object : SearchView.OnQueryTextListener {
@@ -109,21 +123,7 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    if(!toastShowed) {
-                        val inflater = layoutInflater
-                        val layout: View = inflater.inflate(
-                            R.layout.search_toast, null
-                        )
-                        val text: TextView = layout.findViewById(R.id.toastTxt)
-                        text.text = "You can search multiple things etc. milk,egg,bread"
 
-                        val toast = Toast(applicationContext)
-                        toast.setGravity(Gravity.TOP, 0, 200)
-                        toast.duration = Toast.LENGTH_LONG
-                        toast.view = layout
-                        toast.show()
-                        toastShowed=true
-                    }
                     return false
                 }
             }
@@ -204,6 +204,15 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
     }
     override fun onFailure(call: Call<HintsResults>, t: Throwable) {
         t.printStackTrace()
+    }
+    override fun onPause() {
+        super.onPause()
+        EventBus.getDefault().unregister(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        EventBus.getDefault().register(this)
     }
 }
 

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pma_kuharica.R
 import com.example.pma_kuharica.adapters.MyFoodRecyclerViewAdapter
+import com.example.pma_kuharica.adapters.RecipeIngredientsRecyclerViewAdapter
 import com.example.pma_kuharica.classes.Food
 import com.example.pma_kuharica.classes.Hint
 import com.example.pma_kuharica.classes.Nutrients
@@ -28,14 +29,15 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.ArrayList
 
-class BottomSheetIngredients : BottomSheetDialogFragment() {
+class BottomSheetIngredients(foodID:String) : BottomSheetDialogFragment() {
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
     private var dbReference: DatabaseReference=database.reference
     private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
     private var mLayoutManager: RecyclerView.LayoutManager? = null
-    var food: Food?=null
+    private var oFoodID:String=foodID
+    private var foodList: MutableList<Food> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -52,33 +54,24 @@ class BottomSheetIngredients : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val db: DatabaseReference = dbReference.child(mAuth.currentUser!!.uid).child("Food")
+        val db: DatabaseReference = dbReference.child(mAuth.currentUser!!.uid).child("Recipe").child(oFoodID).child("food")
 
         db.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(postSnapshot in snapshot.children){
                     if (postSnapshot.value != null) {
-                        food = postSnapshot.getValue<Food>()
+                        foodList.add(postSnapshot.getValue<Food>()!!)
                     }
                 }
-                if(food!=null) {
-                    val nodeValue:ArrayList<String>?=null
-                    view.findViewById<RecyclerView>(R.id.recyclerViewMyFood).visibility=View.VISIBLE
-                    view.findViewById<TextView>(R.id.myFoodEmpty).visibility=View.INVISIBLE
-                    mRecyclerView = view.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
+                if(foodList.size>0) {
+                    mRecyclerView = view.findViewById<View>(R.id.recipeModalRecyclerView) as RecyclerView?
                     mLayoutManager = LinearLayoutManager(context)
                     mRecyclerView!!.layoutManager = mLayoutManager
-                    mAdapter = MyFoodRecyclerViewAdapter(
-                        food as ArrayList<Food>,
-                        nodeValue as ArrayList<String>,
-                        context as AppCompatActivity,
-                        true
+                    mAdapter = RecipeIngredientsRecyclerViewAdapter(
+                        foodList as ArrayList<Food>,
+                        context as AppCompatActivity
                     )
                     mRecyclerView!!.adapter = mAdapter
-                }
-                else{
-                    view.findViewById<RecyclerView>(R.id.recyclerViewMyFood).visibility=View.INVISIBLE
-                    view.findViewById<TextView>(R.id.myFoodEmpty).visibility=View.VISIBLE
                 }
             }
 

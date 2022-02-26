@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,21 +14,30 @@ import com.example.pma_kuharica.adapters.FoodRecyclerViewAdapter
 import com.example.pma_kuharica.adapters.IngredientsRecyclerViewAdapter
 import com.example.pma_kuharica.adapters.MyFoodRecyclerViewAdapter
 import com.example.pma_kuharica.adapters.MyRecipeRecyclerViewAdapter
-import com.example.pma_kuharica.classes.Food
-import com.example.pma_kuharica.classes.IntentService
+import com.example.pma_kuharica.classes.*
+import com.example.pma_kuharica.interfaces.IngredientInterface
+import com.example.pma_kuharica.interfaces.MainInterface
+import com.example.pma_kuharica.interfaces.RecipeInterface
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.time.Duration
 import java.util.ArrayList
 
 
-class AddRecipeFragment : Fragment() {
+class AddRecipeFragment : Fragment(),RecipeInterface {
     var data:Any?=null
     val ingredientList: MutableList<Food> = mutableListOf()
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
     private var mLayoutManager: RecyclerView.LayoutManager? = null
+    private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private var dbReference: DatabaseReference =database.reference
+    private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -50,9 +56,28 @@ class AddRecipeFragment : Fragment() {
             val modalBottomSheet = BottomSheetFragmentAddIngr()
             modalBottomSheet.show(parentFragmentManager, BottomSheetFragmentAddIngr.TAG)
         }
-        //ucitaj ingrediente iz globalnog objekta ako postoje
+        val recipeName=view.findViewById<TextInputLayout>(R.id.recipeName)
+        val recipeDescription=view.findViewById<TextInputLayout>(R.id.editTxtRecipeDesc)
         view.findViewById<Button>(R.id.btnAddRecipe).setOnClickListener {
-            val recipeName=view.findViewById<TextInputLayout>(R.id.recipeName).editText?.text.toString()
+            recipeDescription.editText?.text.toString()
+            val recipeIngredients:ArrayList<Food> = ingredientList as ArrayList<Food>
+            if(recipeName.editText?.text.toString().isNullOrEmpty()){
+                recipeName.isErrorEnabled=true
+                recipeName.error = "Recipe name is required"
+            }
+            else if(recipeIngredients.size==0){
+                recipeName.isErrorEnabled=false
+                Toast.makeText(context,"You have to add some ingredients",Toast.LENGTH_SHORT).show()
+            }
+            else{
+                val newNode=dbReference.child(mAuth.currentUser!!.uid).child("Recipe").push().key.toString()
+                val recipe= Recipe(recipeId = newNode, name = recipeName.editText?.text.toString(), food = recipeIngredients, description = recipeDescription.editText?.text.toString())
+                dbReference.child(mAuth.currentUser!!.uid).child("Recipe").child(newNode).setValue(recipe)
+                EventBus.getDefault().post(MainService(1,true))
+                recipeName.editText?.text?.clear()
+                recipeDescription.editText?.text?.clear()
+                recipeIngredients.clear()
+            }
         }
 }
     override fun onPause() {
@@ -70,17 +95,19 @@ class AddRecipeFragment : Fragment() {
         ingredientList.add(intentServiceResult.mResultValue!!)
         view?.findViewById<ProgressBar>(R.id.progress)?.visibility=View.VISIBLE
         view?.findViewById<TextView>(R.id.noIngrTxt)?.visibility=View.INVISIBLE
-        val nodeValue:ArrayList<String>? = null
         mRecyclerView = view?.findViewById<View>(R.id.recyclerViewAddNewRecipe) as RecyclerView?
         mLayoutManager = LinearLayoutManager(context)
         mRecyclerView!!.layoutManager = mLayoutManager
         mAdapter = MyFoodRecyclerViewAdapter(
             ingredientList as ArrayList<Food>,
-            nodeValue,
             context as AppCompatActivity,
             false
         )
         mRecyclerView!!.adapter = mAdapter
         view?.findViewById<ProgressBar>(R.id.progress)?.visibility=View.GONE
+    }
+
+    override fun GetRecipe(oRecipe: Recipe) {
+        EventBus.getDefault().post(RecipeService(1, oRecipe))
     }
 }
