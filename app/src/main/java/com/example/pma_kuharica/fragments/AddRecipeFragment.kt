@@ -1,6 +1,8 @@
 package com.example.pma_kuharica.fragments
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,6 +60,24 @@ class AddRecipeFragment : Fragment(),RecipeInterface {
         }
         val recipeName=view.findViewById<TextInputLayout>(R.id.recipeName)
         val recipeDescription=view.findViewById<TextInputLayout>(R.id.editTxtRecipeDesc)
+        recipeName.editText?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int,
+                                           count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int,
+                                       before: Int, count: Int) {
+                if(recipeName.editText?.text.toString().isNullOrEmpty()){
+                    recipeName.isErrorEnabled=true
+                    recipeName.error = "Recipe name is required"
+                }
+                else{
+                    recipeName.isErrorEnabled=false
+                }
+            }
+        })
         view.findViewById<Button>(R.id.btnAddRecipe).setOnClickListener {
             recipeDescription.editText?.text.toString()
             val recipeIngredients:ArrayList<Food> = ingredientList as ArrayList<Food>

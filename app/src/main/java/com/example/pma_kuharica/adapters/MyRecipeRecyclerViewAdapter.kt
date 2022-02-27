@@ -1,29 +1,23 @@
 package com.example.pma_kuharica.adapters
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.os.Bundle
+import android.content.Intent
+import android.content.Intent.createChooser
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pma_kuharica.R
-import com.example.pma_kuharica.classes.Food
-import com.example.pma_kuharica.classes.Hint
-import com.example.pma_kuharica.classes.Nutrients
 import com.example.pma_kuharica.classes.Recipe
-import com.example.pma_kuharica.fragments.BottomSheetFragment
 import com.example.pma_kuharica.fragments.BottomSheetFragmentAddIngr
 import com.example.pma_kuharica.fragments.BottomSheetIngredients
-import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import java.util.ArrayList
-import java.util.concurrent.Executors
+
 
 class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>, context: AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var recipes: ArrayList<Recipe> = oRecipe
@@ -51,6 +45,36 @@ class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>, context: AppCompa
         holder.recipeDelete.setOnClickListener {
             dbReference.child(mAuth.currentUser!!.uid).child("Recipe").child(recipes[holder.adapterPosition].recipeId.toString()).removeValue()
         }
+        holder.recipeShare.setOnClickListener {
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Recipe")
+            val recipeIngredients= arrayOf(recipes[holder.adapterPosition].food)
+            val c = 45.toChar()
+            var template:String = ""
+            for(item in recipeIngredients){
+                if (item != null) {
+                    for(food in item) {
+                        template += "\n${c}${food.label}"
+                    }
+                }
+            }
+            val shareMessage = String.format("${context.resources.getString(R.string.shareRecipeHeader)}\n\n" +
+                    "${context.resources.getString(R.string.shareRecipeName)} %s\n" +
+                    "${context.resources.getString(R.string.shareRecipeDescription)} %s\n\n" +
+                    "${context.resources.getString(R.string.shareRecipeIngredients)} %s",
+                    recipes[holder.adapterPosition].name,recipes[holder.adapterPosition].description,template)
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
+            context.startActivity(createChooser(shareIntent, "Sharing via"))
+        }
+        holder.recipeFavorite.setOnClickListener{
+            if (!holder.recipeFavorite.isChecked) {
+                dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Recipes").child(recipes[holder.adapterPosition].recipeId.toString()).removeValue()
+            }
+            else{
+                dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Recipes").child(recipes[holder.adapterPosition].recipeId.toString()).setValue(recipes[holder.adapterPosition])
+            }
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -63,6 +87,7 @@ class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>, context: AppCompa
         val recipeIngredients:Button=recipeView.findViewById(R.id.btnRecipeIngr)
         val recipeFavorite:CheckBox=recipeView.findViewById(R.id.starRecipe)
         val recipeDelete:ImageButton=recipeView.findViewById(R.id.deleteRecipe)
+        val recipeShare:ImageButton=recipeView.findViewById(R.id.shareRecipe)
     }
 
     override fun getItemCount(): Int {

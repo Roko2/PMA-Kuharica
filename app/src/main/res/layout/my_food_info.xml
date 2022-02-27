@@ -55,10 +55,24 @@
         app:layout_constraintStart_toStartOf="@id/txtMyCategoryName"
         app:layout_constraintEnd_toEndOf="@id/txtMyCategoryName"/>
 
+    <CheckBox
+        android:id="@+id/starFood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:button="@drawable/checkbox"
+        android:layout_marginEnd="30dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/deleteFood"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/deleteFood"
+        app:layout_constraintTop_toTopOf="parent"
+        app:useMaterialThemeColors="false" />
     <ImageButton
         android:id="@+id/deleteFood"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtMyFoodName"
         app:useMaterialThemeColors="false"

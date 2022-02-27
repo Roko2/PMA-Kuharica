@@ -63,19 +63,7 @@
             android:textSize="16dp"
             android:textStyle="bold"
             android:layout_marginTop="16dp"></TextView>
-        <ProgressBar
-            android:id="@+id/progressHome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="invisible"
-            app:layout_constraintTop_toBottomOf="@+id/txtRecommended"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="30dp"
-            app:useMaterialThemeColors="false"
-            android:theme="@style/ProgressBarStyle"
-            />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewRecommendedRecipes"
             android:layout_width="match_parent"
@@ -86,5 +74,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtRecommended"></androidx.recyclerview.widget.RecyclerView>
+        <ProgressBar
+            android:id="@+id/progressHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:layout_constraintTop_toBottomOf="@+id/txtRecommended"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="30dp"
+            android:visibility="invisible"
+            app:useMaterialThemeColors="false"
+            android:theme="@style/ProgressBarStyleApp"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

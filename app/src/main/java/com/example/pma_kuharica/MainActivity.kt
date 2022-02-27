@@ -12,6 +12,9 @@ import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
+import com.example.pma_kuharica.adapters.InfoFavoritesAdapter
 import com.example.pma_kuharica.api.ApiManager
 import com.example.pma_kuharica.classes.HintsResults
 import com.example.pma_kuharica.classes.MainService
@@ -22,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -35,6 +39,7 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity(), Callback<HintsResults> {
     private lateinit var hintData: HintsResults
+    private var tabLayoutCreated:Boolean=false
     val fragment2: Fragment = IngredientFragment()
     val fragment1: Fragment = HomeFragment()
     val fragment3: Fragment = InfoFragment()
@@ -47,7 +52,8 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
+        lateinit var tabLayout: TabLayout
+        lateinit var viewPager: ViewPager
         fm.beginTransaction().add(R.id.fragmentContainerView,fragment1, "1").commit()
         fm.beginTransaction().add(R.id.fragmentContainerView, fragment2, "2").hide(fragment2).commit()
         fm.beginTransaction().add(R.id.fragmentContainerView, fragment5, "5").hide(fragment5).commit()
@@ -70,6 +76,33 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
                 R.id.infoPage -> {
                     fm.beginTransaction().hide(active).show(fragment3).commit()
                     active = fragment3
+                    if(!tabLayoutCreated) {
+                        tabLayout = findViewById(R.id.tabLayout)
+                        viewPager = findViewById(R.id.viewPager)
+                        tabLayout.addTab(tabLayout.newTab().setText("Recipe"))
+                        tabLayout.addTab(tabLayout.newTab().setText("Food"))
+                        tabLayout.tabGravity = TabLayout.GRAVITY_FILL
+                        val adapterInfo = InfoFavoritesAdapter(
+                            this, supportFragmentManager,
+                            tabLayout.tabCount
+                        )
+                        viewPager.adapter = adapterInfo
+                        viewPager.addOnPageChangeListener(
+                            TabLayout.TabLayoutOnPageChangeListener(
+                                tabLayout
+                            )
+                        )
+                        tabLayout.addOnTabSelectedListener(object :
+                            TabLayout.OnTabSelectedListener {
+                            override fun onTabSelected(tab: TabLayout.Tab) {
+                                viewPager.currentItem = tab.position
+                            }
+
+                            override fun onTabUnselected(tab: TabLayout.Tab) {}
+                            override fun onTabReselected(tab: TabLayout.Tab) {}
+                        })
+                        tabLayoutCreated=true
+                    }
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.foodPage -> {

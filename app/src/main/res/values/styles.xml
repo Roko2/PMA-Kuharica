@@ -15,4 +15,7 @@
     <style name="ProgressBarStyle">
         <item name="colorAccent">@color/white</item>
     </style>
+    ž <style name="ProgressBarStyleApp">
+    <item name="colorAccent">@color/black</item>
+</style>
 </resources>

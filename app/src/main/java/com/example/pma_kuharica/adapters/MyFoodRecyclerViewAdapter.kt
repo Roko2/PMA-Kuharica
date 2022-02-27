@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -40,9 +41,13 @@ class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>, context: AppCompatActiv
             }
         }
         else{
+            holder.btnFavoriteFood.visibility=View.GONE
             holder.btnDeleteFood.setOnClickListener {
                 food.removeAt(holder.adapterPosition)
                 notifyItemRemoved(holder.adapterPosition)
+                if(food.size==0){
+                    context.findViewById<TextView>(R.id.noIngrTxt).visibility=View.VISIBLE
+                }
             }
         }
         holder.btnMyFoodNutrients.setOnClickListener {
@@ -51,6 +56,14 @@ class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>, context: AppCompatActiv
             mBundle.putSerializable("nutrients",oNutrients)
             modalBottomSheet.arguments = mBundle
             modalBottomSheet.show(context.supportFragmentManager, BottomSheetFragment.TAG)
+        }
+        holder.btnFavoriteFood.setOnClickListener{
+            if (!holder.btnFavoriteFood.isChecked) {
+                dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food").child(food[holder.adapterPosition].foodId).removeValue()
+            }
+            else{
+                dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food").child(food[holder.adapterPosition].foodId).setValue(food[holder.adapterPosition])
+            }
         }
     }
 
@@ -63,6 +76,7 @@ class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>, context: AppCompatActiv
         var myCategoryName: TextView = foodView.findViewById(R.id.txtMyCategoryNameView)
         var btnMyFoodNutrients: Button = foodView.findViewById(R.id.myFoodNutrientsBtn)
         var btnDeleteFood:ImageButton=foodView.findViewById(R.id.deleteFood)
+        var btnFavoriteFood: CheckBox=foodView.findViewById(R.id.starFood)
     }
 
     override fun getItemCount(): Int {

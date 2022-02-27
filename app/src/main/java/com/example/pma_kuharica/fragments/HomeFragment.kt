@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.annotation.NonNull
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,11 +46,11 @@ class HomeFragment : Fragment(), Callback<HintsResults> {
         val headerImage=view.findViewById<ImageView>(R.id.imageView)
         headerImage.adjustViewBounds = true
         headerImage.scaleType = ImageView.ScaleType.CENTER_CROP
-        view.findViewById<ProgressBar>(R.id.progressHome).visibility=View.VISIBLE
         val apiUrl: String = String.format(
             "/api/food-database/v2/parser?app_id=0fe8f86d&app_key=875e22c3d3ec38bd2453e0223a451f16&ingr=%s",
             resources.getString(R.string.searchItems)
         )
+        view.findViewById<ProgressBar>(R.id.progressHome)?.visibility=View.VISIBLE
         ApiManager.getNewInstance()?.service()?.getFood(apiUrl)?.enqueue(this)
         var loading = true
         var pastVisiblesItems: Int
@@ -87,7 +88,7 @@ class HomeFragment : Fragment(), Callback<HintsResults> {
                     }
                     mAdapter?.notifyDataSetChanged()
                 }
-                view.findViewById<ProgressBar>(R.id.progressHome)?.visibility=View.INVISIBLE
+               view.findViewById<ProgressBar>(R.id.progressHome)?.visibility=View.INVISIBLE
             }
 
             override fun onFailure(call: Call<HintsResults>, t: Throwable) {
@@ -109,7 +110,8 @@ class HomeFragment : Fragment(), Callback<HintsResults> {
             mLayoutManager = GridLayoutManager(context,3)
             mRecyclerView!!.layoutManager = mLayoutManager
             mAdapter = HomePageRandomFoodAdapter(
-                foodList as ArrayList<Hint>
+                foodList as ArrayList<Hint>,
+                context as AppCompatActivity
             )
             mRecyclerView!!.adapter = mAdapter
             val spacing = resources.getDimensionPixelSize(R.dimen.recycler_spacing) / 2

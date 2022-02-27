@@ -14,4 +14,16 @@
     <string name="searchItems">
       milk,egg,bread,water,pizza,tomato,apple,honey,coffee,orange
     </string>
+    <string name="shareRecipeHeader">
+        <u>Look at my recipe!</u>
+    </string>
+    <string name="shareRecipeName">
+        <b>Recipe name:</b>
+    </string>
+    <string name="shareRecipeDescription">
+        <b>Description:</b>
+    </string>
+    <string name="shareRecipeIngredients">
+        <b>Ingredients:</b>
+    </string>
 </resources>
