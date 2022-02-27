@@ -26,6 +26,7 @@ class SearchFragment : Fragment(), Callback<HintsResults> {
     private var mAdapter: RecyclerView.Adapter<*>? = null
     private var mLayoutManager: RecyclerView.LayoutManager? = null
     private var nextHintData:HintsResults?=null
+    private var previousPageLinks:MutableList<String> = mutableListOf()
     private lateinit var hintList:HintsResults
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,22 +41,44 @@ class SearchFragment : Fragment(), Callback<HintsResults> {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val btnNext = getView()?.findViewById<Button>(R.id.btnNext)
-
+        val btnNext = view.findViewById<Button>(R.id.btnNext)
+        val btnPrevious=view.findViewById<Button>(R.id.btnPrevious)
         hintList = arguments?.getSerializable(
             "mResults"
         ) as HintsResults
 
         if (hintList.mResults?.size == 0) {
-            getView()?.findViewById<TextView>(R.id.txtViewSearchMsg)?.text = "No results"
-            btnNext?.visibility = INVISIBLE
+           view.findViewById<TextView>(R.id.txtViewSearchMsg)?.text = "No results"
         } else {
-            getView()?.findViewById<TextView>(R.id.txtViewSearchMsg)?.text = "Search results"
-            btnNext?.visibility = VISIBLE
+            if(hintList.mNextPage == null){
+                btnNext?.visibility = INVISIBLE
+                btnPrevious?.visibility = INVISIBLE
+            }
+            else{
+                btnNext?.visibility = VISIBLE
+                btnPrevious?.visibility = INVISIBLE
+            }
+            view.findViewById<TextView>(R.id.txtViewSearchMsg)?.text = "Search results"
             btnNext?.setOnClickListener {
                 val apiUrl: String = hintList.mNextPage?.next?.href.toString()
                 val substringApi: String = apiUrl.subSequence(22, apiUrl.lastIndex + 1).toString()
                 ApiManager.getNewInstance()?.service()?.getFood(substringApi)?.enqueue(this)
+                previousPageLinks.add(apiUrl)
+                if(previousPageLinks.size>1){
+                    btnPrevious?.visibility = VISIBLE
+                }
+            }
+            btnPrevious.setOnClickListener {
+                if(previousPageLinks.size>1){
+                    val apiUrl: String = previousPageLinks.last()
+                    val substringApi: String = apiUrl.subSequence(22, apiUrl.lastIndex + 1).toString()
+                    ApiManager.getNewInstance()?.service()?.getFood(substringApi)?.enqueue(this)
+                    previousPageLinks.removeLast()
+                }
+                else{
+                    btnPrevious?.visibility = INVISIBLE
+                    btnNext?.visibility = VISIBLE
+                }
             }
             mRecyclerView = getView()?.findViewById<View>(R.id.recyclerViewFood) as RecyclerView?
             mLayoutManager = LinearLayoutManager(context)

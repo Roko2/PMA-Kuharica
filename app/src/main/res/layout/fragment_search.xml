@@ -23,8 +23,18 @@
             android:layout_gravity="end|bottom"
             android:layout_marginStart="300dp"
             android:backgroundTint="@color/white"
-            app:iconSize="13dp"
             app:icon="@drawable/ic_next"
+            app:iconSize="13dp"
+            app:iconTint="@color/black" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPrevious"
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginStart="50dp"
+            android:backgroundTint="@color/white"
+            app:icon="@drawable/ic_left"
+            app:iconSize="13dp"
             app:iconTint="@color/black" />
 
         <androidx.recyclerview.widget.RecyclerView

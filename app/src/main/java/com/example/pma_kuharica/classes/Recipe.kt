@@ -1,5 +1,6 @@
 package com.example.pma_kuharica.classes
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Recipe(
@@ -10,5 +11,6 @@ data class Recipe(
     @SerializedName("food")
     val food: ArrayList<Food>? =null,
     @SerializedName("description")
-    val description: String?=""
+    val description: String?="",
+    @Transient var isFavorite: Boolean=false
 )

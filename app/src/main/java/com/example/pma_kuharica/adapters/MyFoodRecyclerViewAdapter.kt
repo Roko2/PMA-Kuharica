@@ -17,9 +17,10 @@ import com.example.pma_kuharica.fragments.BottomSheetFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
-class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>, context: AppCompatActivity,isRecipeFoodUpdate:Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>, context: AppCompatActivity,isRecipeFoodUpdate:Boolean,isFavorite:Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var food: ArrayList<Food> = oFood
     private var bIsRecipeFoodUpdate:Boolean=isRecipeFoodUpdate
+    private var bIsFoodFavorite:Boolean=isFavorite
     private var context:AppCompatActivity = context
     private var database:FirebaseDatabase= FirebaseDatabase.getInstance()
     private var dbReference=database.reference
@@ -37,7 +38,14 @@ class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>, context: AppCompatActiv
         holder.myCategoryName.text = food[position].category
         if(bIsRecipeFoodUpdate) {
             holder.btnDeleteFood.setOnClickListener {
-                dbReference.child(mAuth.currentUser!!.uid).child("Food").child(food[holder.adapterPosition].foodId).removeValue()
+                if(bIsFoodFavorite){
+                    dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food")
+                        .child(food[holder.adapterPosition].foodId).removeValue()
+                }
+                else {
+                    dbReference.child(mAuth.currentUser!!.uid).child("Food")
+                        .child(food[holder.adapterPosition].foodId).removeValue()
+                }
             }
         }
         else{
@@ -59,12 +67,17 @@ class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>, context: AppCompatActiv
         }
         holder.btnFavoriteFood.setOnClickListener{
             if (!holder.btnFavoriteFood.isChecked) {
+                food[holder.adapterPosition].isFavorite=false
+                dbReference.child(mAuth.currentUser!!.uid).child("Food").child(food[holder.adapterPosition].foodId).setValue(food[holder.adapterPosition])
                 dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food").child(food[holder.adapterPosition].foodId).removeValue()
             }
             else{
+                food[holder.adapterPosition].isFavorite=true
+                dbReference.child(mAuth.currentUser!!.uid).child("Food").child(food[holder.adapterPosition].foodId).setValue(food[holder.adapterPosition])
                 dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food").child(food[holder.adapterPosition].foodId).setValue(food[holder.adapterPosition])
             }
         }
+        holder.btnFavoriteFood.isChecked=food[holder.adapterPosition].isFavorite
     }
 
     override fun getItemViewType(position: Int): Int {

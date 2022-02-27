@@ -55,6 +55,7 @@ class BottomSheetFragmentAddIngr : BottomSheetDialogFragment(), Callback<HintsRe
             val query=view.findViewById<TextInputLayout>(R.id.inptSearchIngr).editText?.text.toString()
             if(query.isNotEmpty()) {
                 view.findViewById<ProgressBar>(R.id.progress).visibility=View.VISIBLE
+                view.findViewById<TextView>(R.id.txtNoResults)?.visibility=View.INVISIBLE
                 val apiUrl: String = String.format(
                     "/api/food-database/v2/parser?app_id=0fe8f86d&app_key=875e22c3d3ec38bd2453e0223a451f16&ingr=%s",
                     query

@@ -88,7 +88,8 @@ class IngredientFragment : Fragment() {
                     mAdapter = MyFoodRecyclerViewAdapter(
                         foodList as ArrayList<Food>,
                         context as AppCompatActivity,
-                        true
+                        true,
+                        false
                     )
                     mRecyclerView!!.adapter = mAdapter
                 }
@@ -136,7 +137,7 @@ class IngredientFragment : Fragment() {
                                     fibtg  =foodFibtg,
                                     procnt = foodProcnt)
 
-            val food=Food(label = window2.findViewById<TextInputLayout>(R.id.foodName).editText?.text.toString(), category =spinner?.selectedItem.toString(), nutrients = nutrients, foodId = newNode, categoryLabel = "", foodContentsLabel = "", image = "")
+            val food=Food(label = window2.findViewById<TextInputLayout>(R.id.foodName).editText?.text.toString(), category =spinner?.selectedItem.toString(), nutrients = nutrients, foodId = newNode, categoryLabel = "", foodContentsLabel = "", image = "", isFavorite = false)
             dbReference.child(userFirebase.uid).child("Food").child(newNode).setValue(food)
             foodList.add(food)
             Toast.makeText(context, "Food is added", Toast.LENGTH_SHORT).show()
@@ -144,7 +145,7 @@ class IngredientFragment : Fragment() {
             mRecyclerView = view?.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
             mLayoutManager = LinearLayoutManager(context)
             mRecyclerView!!.layoutManager = mLayoutManager
-            mAdapter = MyFoodRecyclerViewAdapter(foodList as ArrayList<Food>, context as AppCompatActivity,true)
+            mAdapter = MyFoodRecyclerViewAdapter(foodList as ArrayList<Food>, context as AppCompatActivity,true,false)
             mRecyclerView!!.adapter = mAdapter
         }
     }

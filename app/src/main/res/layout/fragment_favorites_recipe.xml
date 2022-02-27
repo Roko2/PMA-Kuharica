@@ -25,10 +25,20 @@
         android:fontFamily="serif"
         android:textStyle="bold"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/favoriteRecipeEmpty"
+        android:hint="No favorite recipes"
+        app:layout_constraintTop_toBottomOf="@+id/headerFavoritesRecipe"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="35dp"
+        android:textSize="16dp"/>
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewRecipeFavorites"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerFavoritesRecipe"
         app:layout_constraintStart_toStartOf="parent"

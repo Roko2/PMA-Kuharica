@@ -9,11 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pma_kuharica.R
+import com.example.pma_kuharica.classes.Food
 import com.example.pma_kuharica.classes.Hint
 import com.example.pma_kuharica.classes.Nutrients
 import com.example.pma_kuharica.fragments.BottomSheetFragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import com.squareup.picasso.Picasso
 import java.util.ArrayList
 import java.util.concurrent.Executors.*
@@ -21,6 +26,9 @@ import java.util.concurrent.Executors.*
 class FoodRecyclerViewAdapter(foodList: ArrayList<Hint>, context:AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var dataList: ArrayList<Hint> = foodList
     private var context:AppCompatActivity = context
+    private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private var dbReference=database.reference
+    private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.food_info, parent, false) as View
@@ -30,7 +38,7 @@ class FoodRecyclerViewAdapter(foodList: ArrayList<Hint>, context:AppCompatActivi
     @SuppressLint("RestrictedApi", "ResourceType")
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as FoodViewHolder
-        val oFood: Hint = dataList[position]
+        val oFood: Hint = dataList[holder.adapterPosition]
         var oNutrients:Nutrients= oFood.food!!.nutrients!!
         holder.ingredientTxt.text = oFood.food.label
         holder.categoryTxt.text = oFood.food.category
@@ -47,6 +55,30 @@ class FoodRecyclerViewAdapter(foodList: ArrayList<Hint>, context:AppCompatActivi
         } else {
             Picasso.get().load(oFood.food.image.toString()).into(holder.foodImage);
         }
+        holder.checkBox.setOnClickListener{
+            if (!holder.checkBox.isChecked) {
+                dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food").child(oFood.food.foodId).removeValue()
+            }
+            else{
+                oFood.food.isFavorite=true
+                dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food").child(oFood.food.foodId).setValue(oFood.food)
+            }
+        }
+        val db: DatabaseReference = dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food")
+
+        db.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(postSnapshot in snapshot.children){
+                    if (postSnapshot.value != null) {
+                        val storedFood: Food? = postSnapshot.getValue<Food>()
+                        holder.checkBox.isChecked = storedFood?.foodId==oFood.food.foodId
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 
     override fun getItemViewType(position: Int): Int {

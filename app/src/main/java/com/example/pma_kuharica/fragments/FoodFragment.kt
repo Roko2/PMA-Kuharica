@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -30,10 +31,9 @@ import java.util.ArrayList
 class FoodFragment : Fragment() {
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
-    val recipeList:MutableList<Recipe> = mutableListOf()
-    val nodeValue:MutableList<String> = mutableListOf()
+    val recipeList: MutableList<Recipe> = mutableListOf()
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
-    private var dbReference: DatabaseReference=database.reference
+    private var dbReference: DatabaseReference = database.reference
     private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private var mLayoutManager: RecyclerView.LayoutManager? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,16 +54,16 @@ class FoodFragment : Fragment() {
         dbRecipe.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 recipeList.clear()
-                nodeValue.clear()
-                for(postSnapshot in snapshot.children){
+                for (postSnapshot in snapshot.children) {
                     if (postSnapshot.value != null) {
                         val storedRecipe: Recipe? = postSnapshot.getValue<Recipe>()
                         recipeList.add(storedRecipe!!)
                     }
                 }
-                if(recipeList.size>0) {
-                    view.findViewById<RecyclerView>(R.id.recyclerViewMyRecipe).visibility=View.VISIBLE
-                    view.findViewById<TextView>(R.id.myRecipeEmpty).visibility=View.INVISIBLE
+                if (recipeList.size > 0) {
+                    view.findViewById<RecyclerView>(R.id.recyclerViewMyRecipe).visibility =
+                        View.VISIBLE
+                    view.findViewById<TextView>(R.id.myRecipeEmpty).visibility = View.INVISIBLE
                     mRecyclerView =
                         view.findViewById<View>(R.id.recyclerViewMyRecipe) as RecyclerView?
                     mLayoutManager = LinearLayoutManager(context)
@@ -73,10 +73,10 @@ class FoodFragment : Fragment() {
                         context as AppCompatActivity
                     )
                     mRecyclerView!!.adapter = mAdapter
-                }
-                else{
-                    view.findViewById<RecyclerView>(R.id.recyclerViewMyRecipe).visibility=View.INVISIBLE
-                    view.findViewById<TextView>(R.id.myRecipeEmpty).visibility=View.VISIBLE
+                } else {
+                    view.findViewById<RecyclerView>(R.id.recyclerViewMyRecipe).visibility =
+                        View.INVISIBLE
+                    view.findViewById<TextView>(R.id.myRecipeEmpty).visibility = View.VISIBLE
                 }
             }
 
@@ -85,18 +85,18 @@ class FoodFragment : Fragment() {
             }
         })
     }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun doThis(intentServiceResult: RecipeService) {
-        recipeList.add(intentServiceResult.mResultValue!!)
-        mAdapter?.notifyDataSetChanged()
-    }
-    override fun onPause() {
-        super.onPause()
-        EventBus.getDefault().unregister(this)
-    }
+        @Subscribe(threadMode = ThreadMode.MAIN)
+        fun doThis(intentServiceResult: RecipeService) {
+            recipeList.add(intentServiceResult.mResultValue!!)
+            mAdapter?.notifyDataSetChanged()
+        }
+        override fun onPause() {
+            super.onPause()
+            EventBus.getDefault().unregister(this)
+        }
 
-    override fun onResume() {
-        super.onResume()
-        EventBus.getDefault().register(this)
-    }
+        override fun onResume() {
+            super.onResume()
+            EventBus.getDefault().register(this)
+        }
 }

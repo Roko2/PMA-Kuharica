@@ -16,7 +16,8 @@ import com.example.pma_kuharica.classes.Recipe
 import com.example.pma_kuharica.fragments.BottomSheetFragmentAddIngr
 import com.example.pma_kuharica.fragments.BottomSheetIngredients
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 
 
 class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>, context: AppCompatActivity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -29,6 +30,7 @@ class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>, context: AppCompa
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.my_recipe_info, parent, false) as View
         return MyRecipeViewHolder(view)
+
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
@@ -44,6 +46,7 @@ class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>, context: AppCompa
         }
         holder.recipeDelete.setOnClickListener {
             dbReference.child(mAuth.currentUser!!.uid).child("Recipe").child(recipes[holder.adapterPosition].recipeId.toString()).removeValue()
+            dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Recipe").child(recipes[holder.adapterPosition].recipeId.toString()).removeValue()
         }
         holder.recipeShare.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SEND)
@@ -69,12 +72,15 @@ class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>, context: AppCompa
         }
         holder.recipeFavorite.setOnClickListener{
             if (!holder.recipeFavorite.isChecked) {
-                dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Recipes").child(recipes[holder.adapterPosition].recipeId.toString()).removeValue()
+                dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Recipe").child(recipes[holder.adapterPosition].recipeId.toString()).removeValue()
             }
             else{
-                dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Recipes").child(recipes[holder.adapterPosition].recipeId.toString()).setValue(recipes[holder.adapterPosition])
+                recipes[holder.adapterPosition].isFavorite=true
+                dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Recipe").child(recipes[holder.adapterPosition].recipeId.toString()).setValue(recipes[holder.adapterPosition])
+                dbReference.child(mAuth.currentUser!!.uid).child("Recipe").child(recipes[holder.adapterPosition].recipeId.toString()).setValue(recipes[holder.adapterPosition])
             }
         }
+        holder.recipeFavorite.isChecked = recipes[holder.adapterPosition].isFavorite
     }
 
     override fun getItemViewType(position: Int): Int {

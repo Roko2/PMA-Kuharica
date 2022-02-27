@@ -90,8 +90,9 @@ class AddRecipeFragment : Fragment(),RecipeInterface {
                 Toast.makeText(context,"You have to add some ingredients",Toast.LENGTH_SHORT).show()
             }
             else{
+                recipeName.isErrorEnabled=false
                 val newNode=dbReference.child(mAuth.currentUser!!.uid).child("Recipe").push().key.toString()
-                val recipe= Recipe(recipeId = newNode, name = recipeName.editText?.text.toString(), food = recipeIngredients, description = recipeDescription.editText?.text.toString())
+                val recipe= Recipe(recipeId = newNode, name = recipeName.editText?.text.toString(), food = recipeIngredients, description = recipeDescription.editText?.text.toString(), isFavorite = false)
                 dbReference.child(mAuth.currentUser!!.uid).child("Recipe").child(newNode).setValue(recipe)
                 EventBus.getDefault().post(MainService(1,true))
                 recipeName.editText?.text?.clear()
@@ -121,6 +122,7 @@ class AddRecipeFragment : Fragment(),RecipeInterface {
         mAdapter = MyFoodRecyclerViewAdapter(
             ingredientList as ArrayList<Food>,
             context as AppCompatActivity,
+            false,
             false
         )
         mRecyclerView!!.adapter = mAdapter
