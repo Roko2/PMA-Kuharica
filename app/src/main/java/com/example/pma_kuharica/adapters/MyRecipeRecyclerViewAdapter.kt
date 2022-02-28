@@ -73,6 +73,7 @@ class MyRecipeRecyclerViewAdapter (oRecipe: ArrayList<Recipe>, context: AppCompa
         holder.recipeFavorite.setOnClickListener{
             if (!holder.recipeFavorite.isChecked) {
                 dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Recipe").child(recipes[holder.adapterPosition].recipeId.toString()).removeValue()
+                dbReference.child(mAuth.currentUser!!.uid).child("Recipe").child(recipes[holder.adapterPosition].recipeId.toString()).child("favorite").setValue(false)
             }
             else{
                 recipes[holder.adapterPosition].isFavorite=true

@@ -123,30 +123,73 @@ class IngredientFragment : Fragment() {
         )
         spinner?.adapter=adapter
         window2?.findViewById<Button>(R.id.addFood)?.setOnClickListener{
-            val userFirebase: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+            if(window2.findViewById<TextInputLayout>(R.id.foodName).editText?.text.toString().trim().isNullOrEmpty()){
+                window2.findViewById<TextInputLayout>(R.id.foodName).isErrorEnabled=true
+                window2.findViewById<TextInputLayout>(R.id.foodName).error = "Food name is required"
+            }
+            else {
+                val userFirebase: FirebaseUser? = FirebaseAuth.getInstance().currentUser
 
-            val newNode=dbReference.child(userFirebase!!.uid).child("Food").push().key.toString()
-            val foodChocdf=if(window2.findViewById<TextInputLayout>(R.id.foodCarb).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodCarb).editText?.text.toString().toDouble()
-            val foodEnerc_KCAL=if(window2.findViewById<TextInputLayout>(R.id.foodEnergy).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodEnergy).editText?.text.toString().toDouble()
-            val foodFat=if(window2.findViewById<TextInputLayout>(R.id.foodFat).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodFat).editText?.text.toString().toDouble()
-            val foodFibtg=if(window2.findViewById<TextInputLayout>(R.id.foodFiber).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodFiber).editText?.text.toString().toDouble()
-            val foodProcnt=if(window2.findViewById<TextInputLayout>(R.id.foodProtein).editText?.text.toString().toDoubleOrNull()==null) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodProtein).editText?.text.toString().toDouble()
-            val nutrients=Nutrients(chocdf = foodChocdf,
-                                    enerc_KCAL = foodEnerc_KCAL,
-                                    fat = foodFat,
-                                    fibtg  =foodFibtg,
-                                    procnt = foodProcnt)
+                val newNode =
+                    dbReference.child(userFirebase!!.uid).child("Food").push().key.toString()
+                val foodChocdf =
+                    if (window2.findViewById<TextInputLayout>(R.id.foodCarb).editText?.text.toString()
+                            .toDoubleOrNull() == null
+                    ) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodCarb).editText?.text.toString()
+                        .toDouble()
+                val foodEnerc_KCAL =
+                    if (window2.findViewById<TextInputLayout>(R.id.foodEnergy).editText?.text.toString()
+                            .toDoubleOrNull() == null
+                    ) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodEnergy).editText?.text.toString()
+                        .toDouble()
+                val foodFat =
+                    if (window2.findViewById<TextInputLayout>(R.id.foodFat).editText?.text.toString()
+                            .toDoubleOrNull() == null
+                    ) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodFat).editText?.text.toString()
+                        .toDouble()
+                val foodFibtg =
+                    if (window2.findViewById<TextInputLayout>(R.id.foodFiber).editText?.text.toString()
+                            .toDoubleOrNull() == null
+                    ) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodFiber).editText?.text.toString()
+                        .toDouble()
+                val foodProcnt =
+                    if (window2.findViewById<TextInputLayout>(R.id.foodProtein).editText?.text.toString()
+                            .toDoubleOrNull() == null
+                    ) 0.00 else window2.findViewById<TextInputLayout>(R.id.foodProtein).editText?.text.toString()
+                        .toDouble()
+                val nutrients = Nutrients(
+                    chocdf = foodChocdf,
+                    enerc_KCAL = foodEnerc_KCAL,
+                    fat = foodFat,
+                    fibtg = foodFibtg,
+                    procnt = foodProcnt
+                )
 
-            val food=Food(label = window2.findViewById<TextInputLayout>(R.id.foodName).editText?.text.toString(), category =spinner?.selectedItem.toString(), nutrients = nutrients, foodId = newNode, categoryLabel = "", foodContentsLabel = "", image = "", isFavorite = false)
-            dbReference.child(userFirebase.uid).child("Food").child(newNode).setValue(food)
-            foodList.add(food)
-            Toast.makeText(context, "Food is added", Toast.LENGTH_SHORT).show()
-            dialog2.hide()
-            mRecyclerView = view?.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
-            mLayoutManager = LinearLayoutManager(context)
-            mRecyclerView!!.layoutManager = mLayoutManager
-            mAdapter = MyFoodRecyclerViewAdapter(foodList as ArrayList<Food>, context as AppCompatActivity,true,false)
-            mRecyclerView!!.adapter = mAdapter
+                val food = Food(
+                    label = window2.findViewById<TextInputLayout>(R.id.foodName).editText?.text.toString(),
+                    category = spinner?.selectedItem.toString(),
+                    nutrients = nutrients,
+                    foodId = newNode,
+                    categoryLabel = "",
+                    foodContentsLabel = "",
+                    image = "",
+                    isFavorite = false
+                )
+                dbReference.child(userFirebase.uid).child("Food").child(newNode).setValue(food)
+                foodList.add(food)
+                Toast.makeText(context, "Food is added", Toast.LENGTH_SHORT).show()
+                dialog2.hide()
+                mRecyclerView = view?.findViewById<View>(R.id.recyclerViewMyFood) as RecyclerView?
+                mLayoutManager = LinearLayoutManager(context)
+                mRecyclerView!!.layoutManager = mLayoutManager
+                mAdapter = MyFoodRecyclerViewAdapter(
+                    foodList as ArrayList<Food>,
+                    context as AppCompatActivity,
+                    true,
+                    false
+                )
+                mRecyclerView!!.adapter = mAdapter
+            }
         }
     }
 }

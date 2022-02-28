@@ -60,6 +60,7 @@ class AddRecipeFragment : Fragment(),RecipeInterface {
         }
         val recipeName=view.findViewById<TextInputLayout>(R.id.recipeName)
         val recipeDescription=view.findViewById<TextInputLayout>(R.id.editTxtRecipeDesc)
+        recipeName.isErrorEnabled=false
         recipeName.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
 
@@ -69,7 +70,7 @@ class AddRecipeFragment : Fragment(),RecipeInterface {
 
             override fun onTextChanged(s: CharSequence, start: Int,
                                        before: Int, count: Int) {
-                if(recipeName.editText?.text.toString().isNullOrEmpty()){
+                if(recipeName.editText?.text.toString().trim().isEmpty()){
                     recipeName.isErrorEnabled=true
                     recipeName.error = "Recipe name is required"
                 }
@@ -79,25 +80,30 @@ class AddRecipeFragment : Fragment(),RecipeInterface {
             }
         })
         view.findViewById<Button>(R.id.btnAddRecipe).setOnClickListener {
-            recipeDescription.editText?.text.toString()
             val recipeIngredients:ArrayList<Food> = ingredientList as ArrayList<Food>
-            if(recipeName.editText?.text.toString().isNullOrEmpty()){
+            if(recipeName.editText?.text.toString().trim().isNullOrEmpty()){
                 recipeName.isErrorEnabled=true
                 recipeName.error = "Recipe name is required"
             }
             else if(recipeIngredients.size==0){
                 recipeName.isErrorEnabled=false
+                if( view.findViewById<TextView>(R.id.noIngrTxt)?.visibility==View.INVISIBLE) {
+                    view.findViewById<TextView>(R.id.noIngrTxt)?.visibility = View.VISIBLE
+                }
                 Toast.makeText(context,"You have to add some ingredients",Toast.LENGTH_SHORT).show()
             }
             else{
-                recipeName.isErrorEnabled=false
                 val newNode=dbReference.child(mAuth.currentUser!!.uid).child("Recipe").push().key.toString()
                 val recipe= Recipe(recipeId = newNode, name = recipeName.editText?.text.toString(), food = recipeIngredients, description = recipeDescription.editText?.text.toString(), isFavorite = false)
                 dbReference.child(mAuth.currentUser!!.uid).child("Recipe").child(newNode).setValue(recipe)
                 EventBus.getDefault().post(MainService(1,true))
                 recipeName.editText?.text?.clear()
                 recipeDescription.editText?.text?.clear()
-                recipeIngredients.clear()
+                val ingrListSize:Int=ingredientList.size
+                ingredientList.clear()
+                mAdapter?.notifyItemRangeRemoved(0,ingrListSize)
+                view.findViewById<TextView>(R.id.noIngrTxt)?.visibility = View.VISIBLE
+                recipeName.isErrorEnabled=false
             }
         }
 }

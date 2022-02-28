@@ -36,16 +36,21 @@ class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>, context: AppCompatActiv
         val oNutrients: Nutrients = food[position].nutrients!!
         holder.myFoodName.text = food[position].label
         holder.myCategoryName.text = food[position].category
-        if(bIsRecipeFoodUpdate) {
+        if(bIsRecipeFoodUpdate && !bIsFoodFavorite) {
             holder.btnDeleteFood.setOnClickListener {
-                if(bIsFoodFavorite){
-                    dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food")
-                        .child(food[holder.adapterPosition].foodId).removeValue()
-                }
-                else {
                     dbReference.child(mAuth.currentUser!!.uid).child("Food")
                         .child(food[holder.adapterPosition].foodId).removeValue()
-                }
+            }
+        }
+        else if(bIsFoodFavorite && bIsRecipeFoodUpdate){
+            holder.btnFavoriteFood.visibility=View.GONE
+            holder.btnDeleteFood.setOnClickListener {
+                dbReference.child(mAuth.currentUser!!.uid).child("Food").child(food[holder.adapterPosition].foodId).child(
+                   "favorite"
+                ).setValue(false)
+                dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food")
+                    .child(food[holder.adapterPosition].foodId).removeValue()
+                notifyItemRemoved(holder.adapterPosition)
             }
         }
         else{

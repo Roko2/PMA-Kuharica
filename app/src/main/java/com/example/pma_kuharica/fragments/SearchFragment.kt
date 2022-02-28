@@ -70,10 +70,13 @@ class SearchFragment : Fragment(), Callback<HintsResults> {
             }
             btnPrevious.setOnClickListener {
                 if(previousPageLinks.size>1){
-                    val apiUrl: String = previousPageLinks.last()
+                    val apiUrl: String = previousPageLinks.takeLast(2).first()
                     val substringApi: String = apiUrl.subSequence(22, apiUrl.lastIndex + 1).toString()
                     ApiManager.getNewInstance()?.service()?.getFood(substringApi)?.enqueue(this)
                     previousPageLinks.removeLast()
+                    if(previousPageLinks.size==1){
+                        btnPrevious?.visibility = INVISIBLE
+                    }
                 }
                 else{
                     btnPrevious?.visibility = INVISIBLE

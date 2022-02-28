@@ -65,14 +65,14 @@ class FavoritesFood : Fragment() {
                     mAdapter = MyFoodRecyclerViewAdapter(
                         foodList as ArrayList<Food>,
                         context as AppCompatActivity,
-                        false,
+                        true,
                         true
                     )
                     mRecyclerView!!.adapter = mAdapter
                 }
                 else{
-                    view.findViewById<RecyclerView>(R.id.recyclerViewRecipeFavorites).visibility=View.INVISIBLE
-                    view.findViewById<TextView>(R.id.favoriteRecipeEmpty).visibility=View.VISIBLE
+                    view.findViewById<RecyclerView>(R.id.recyclerViewFoodFavorites).visibility=View.INVISIBLE
+                    view.findViewById<TextView>(R.id.favoriteFoodEmpty).visibility=View.VISIBLE
                 }
             }
 
