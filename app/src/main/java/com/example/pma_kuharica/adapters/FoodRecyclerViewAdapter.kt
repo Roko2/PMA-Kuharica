@@ -38,7 +38,7 @@ class FoodRecyclerViewAdapter(foodList: ArrayList<Hint>, context:AppCompatActivi
     @SuppressLint("RestrictedApi", "ResourceType")
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val holder = viewHolder as FoodViewHolder
-        val oFood: Hint = dataList[holder.adapterPosition]
+        val oFood: Hint = dataList[position]
         var oNutrients:Nutrients= oFood.food!!.nutrients!!
         holder.ingredientTxt.text = oFood.food.label
         holder.categoryTxt.text = oFood.food.category
@@ -65,8 +65,7 @@ class FoodRecyclerViewAdapter(foodList: ArrayList<Hint>, context:AppCompatActivi
             }
         }
         val db: DatabaseReference = dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food")
-
-        db.addValueEventListener(object : ValueEventListener {
+        db.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(postSnapshot in snapshot.children){
                     if (postSnapshot.value != null) {

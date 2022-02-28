@@ -45,9 +45,12 @@ class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>, context: AppCompatActiv
         else if(bIsFoodFavorite && bIsRecipeFoodUpdate){
             holder.btnFavoriteFood.visibility=View.GONE
             holder.btnDeleteFood.setOnClickListener {
-                dbReference.child(mAuth.currentUser!!.uid).child("Food").child(food[holder.adapterPosition].foodId).child(
-                   "favorite"
-                ).setValue(false)
+                if(food[holder.adapterPosition].foodId.take(4)!="food") {
+                    dbReference.child(mAuth.currentUser!!.uid).child("Food")
+                        .child(food[holder.adapterPosition].foodId).child(
+                        "favorite"
+                    ).setValue(false)
+                }
                 dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food")
                     .child(food[holder.adapterPosition].foodId).removeValue()
                 notifyItemRemoved(holder.adapterPosition)
