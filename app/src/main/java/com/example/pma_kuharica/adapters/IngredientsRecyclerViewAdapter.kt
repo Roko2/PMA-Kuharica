@@ -9,25 +9,26 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pma_kuharica.R
-import com.example.pma_kuharica.classes.Food
-import com.example.pma_kuharica.classes.Hint
-import com.example.pma_kuharica.classes.IntentService
-import com.example.pma_kuharica.classes.Nutrients
+import com.example.pma_kuharica.classes.*
 import com.example.pma_kuharica.fragments.BottomSheetFragment
 import com.example.pma_kuharica.fragments.HomeFragment
 import com.example.pma_kuharica.fragments.IngredientFragment.Companion.newInstance
 import com.example.pma_kuharica.interfaces.IngredientInterface
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import com.squareup.picasso.Picasso
 import org.greenrobot.eventbus.EventBus
 import java.util.*
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 
 class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompatActivity,listener:IngredientInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var food: ArrayList<Hint> = oFood
+    private var oIngredients: MutableList<Food>?= mutableListOf()
     private var context:AppCompatActivity = context
     private var database:FirebaseDatabase= FirebaseDatabase.getInstance()
     private var dbReference=database.reference

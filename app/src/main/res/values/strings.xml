@@ -26,4 +26,7 @@
     <string name="shareRecipeIngredients">
         <b>Ingredients:</b>
     </string>
+    <string name="apiStringFood">
+        food
+    </string>
 </resources>

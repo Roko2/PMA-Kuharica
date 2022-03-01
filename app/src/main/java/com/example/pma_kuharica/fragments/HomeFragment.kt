@@ -1,5 +1,6 @@
 package com.example.pma_kuharica.fragments
 
+import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.pma_kuharica.R
 import com.example.pma_kuharica.adapters.HomePageRandomFoodAdapter
 import com.example.pma_kuharica.api.ApiManager
@@ -95,9 +98,19 @@ class HomeFragment : Fragment(), Callback<HintsResults> {
                 t.printStackTrace()
             }
         })
+        view.findViewById<SwipeRefreshLayout>(R.id.swiperefresh).setOnRefreshListener {
+            view.findViewById<ProgressBar>(R.id.progressHome).visibility=View.INVISIBLE
+            view.findViewById<TextView>(R.id.noInternetMsg)?.visibility=View.INVISIBLE
+            view. findViewById<TextView>(R.id.checkInternetMsg)?.visibility=View.INVISIBLE
+            view. findViewById<ImageView>(R.id.warningIcon)?.visibility=View.INVISIBLE
+            view. findViewById<SwipeRefreshLayout>(R.id.swiperefresh).isRefreshing = true
+            parentFragmentManager.beginTransaction().detach(this).commit()
+            parentFragmentManager.beginTransaction().attach(this).commit()
+        }
     }
 
     override fun onResponse(@NonNull call: Call<HintsResults>,@NonNull response: Response<HintsResults>) {
+        view?.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)?.isRefreshing = false
         if (response.isSuccessful && response.body() != null) {
             val hindData:HintsResults = response.body()!!
             for(item in hindData.mResults!!){
@@ -128,6 +141,17 @@ class HomeFragment : Fragment(), Callback<HintsResults> {
         view?.findViewById<ProgressBar>(R.id.progressHome)?.visibility=View.INVISIBLE
     }
     override fun onFailure(@NonNull call: Call<HintsResults>,@NonNull t: Throwable) {
+        view?.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)?.isRefreshing = false
+        view?.findViewById<RecyclerView>(R.id.recyclerViewRecommendedRecipes)?.visibility=View.INVISIBLE
+        view?.findViewById<ProgressBar>(R.id.progressHome)?.visibility=View.INVISIBLE
+        view?.findViewById<TextView>(R.id.noInternetMsg)?.visibility=View.VISIBLE
+        view?.findViewById<TextView>(R.id.checkInternetMsg)?.visibility=View.VISIBLE
+        view?.findViewById<ImageView>(R.id.warningIcon)?.visibility=View.VISIBLE
         t.printStackTrace()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        view?.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)?.isRefreshing = false
     }
 }

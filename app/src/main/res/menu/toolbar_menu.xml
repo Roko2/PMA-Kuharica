@@ -14,4 +14,8 @@
         android:orderInCategory="101"
         android:title="Sign out"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/menuRefresh"
+        android:title="menuRefresh"
+        app:showAsAction="never" />
 </menu>

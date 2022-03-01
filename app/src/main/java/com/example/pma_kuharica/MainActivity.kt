@@ -12,6 +12,7 @@ import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.pma_kuharica.adapters.InfoFavoritesAdapter
@@ -126,6 +127,7 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
 
     override fun onCreateOptionsMenu(menu: Menu) : Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
+        findViewById<SwipeRefreshLayout>(R.id.swiperefresh).isRefreshing = false
         val searchViewItem:MenuItem=menu.findItem(R.id.action_search)
         val searchManager:SearchManager= getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView: SearchView =searchViewItem.actionView as SearchView
@@ -152,6 +154,7 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
                 override fun onQueryTextSubmit(query: String): Boolean {
                     var apiUrl:String=String.format("/api/food-database/v2/parser?app_id=0fe8f86d&app_key=875e22c3d3ec38bd2453e0223a451f16&ingr=%s",query)
                     ApiManager.getNewInstance()?.service()?.getFood(apiUrl)?.enqueue(this@MainActivity)
+                    findViewById<ProgressBar>(R.id.progressSearchMain).visibility=View.VISIBLE
                     return true
                 }
 
@@ -161,7 +164,7 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
                 }
             }
         searchView.setOnQueryTextListener(queryTextListener)
-       return true
+        return true
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -195,6 +198,7 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
     }
     override fun onResponse(@NonNull call: Call<HintsResults>, @NonNull response: Response<HintsResults>) {
         if (response.isSuccessful && response.body() != null) {
+            findViewById<ProgressBar>(R.id.progressSearchMain).visibility=View.INVISIBLE
             hintData = response.body()!!
             val mBundle = Bundle()
             mBundle.putSerializable("mResults",hintData)

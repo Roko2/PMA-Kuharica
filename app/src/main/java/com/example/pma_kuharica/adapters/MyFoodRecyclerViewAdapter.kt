@@ -40,12 +40,15 @@ class MyFoodRecyclerViewAdapter (oFood: ArrayList<Food>, context: AppCompatActiv
             holder.btnDeleteFood.setOnClickListener {
                     dbReference.child(mAuth.currentUser!!.uid).child("Food")
                         .child(food[holder.adapterPosition].foodId).removeValue()
+                dbReference.child(mAuth.currentUser!!.uid).child("Favorites").child("Food")
+                    .child(food[holder.adapterPosition].foodId).removeValue()
+                notifyItemRemoved(holder.adapterPosition)
             }
         }
         else if(bIsFoodFavorite && bIsRecipeFoodUpdate){
             holder.btnFavoriteFood.visibility=View.GONE
             holder.btnDeleteFood.setOnClickListener {
-                if(food[holder.adapterPosition].foodId.take(4)!="food") {
+                if(food[holder.adapterPosition].foodId.take(4) != context.resources.getString(R.string.apiStringFood)) {
                     dbReference.child(mAuth.currentUser!!.uid).child("Food")
                         .child(food[holder.adapterPosition].foodId).child(
                         "favorite"
