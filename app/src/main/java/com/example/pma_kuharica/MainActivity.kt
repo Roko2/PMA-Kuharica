@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity(), Callback<HintsResults> {
 
     override fun onCreateOptionsMenu(menu: Menu) : Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
-        findViewById<SwipeRefreshLayout>(R.id.swiperefresh).isRefreshing = false
+//        findViewById<SwipeRefreshLayout>(R.id.swiperefresh).isRefreshing = false
         val searchViewItem:MenuItem=menu.findItem(R.id.action_search)
         val searchManager:SearchManager= getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView: SearchView =searchViewItem.actionView as SearchView

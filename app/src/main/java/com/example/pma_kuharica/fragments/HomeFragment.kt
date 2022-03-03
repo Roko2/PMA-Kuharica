@@ -91,7 +91,7 @@ class HomeFragment : Fragment(), Callback<HintsResults> {
                     }
                     mAdapter?.notifyDataSetChanged()
                 }
-               view.findViewById<ProgressBar>(R.id.progressHome)?.visibility=View.INVISIBLE
+                view.findViewById<ProgressBar>(R.id.progressHome)?.visibility=View.GONE
             }
 
             override fun onFailure(call: Call<HintsResults>, t: Throwable) {
@@ -99,18 +99,18 @@ class HomeFragment : Fragment(), Callback<HintsResults> {
             }
         })
         view.findViewById<SwipeRefreshLayout>(R.id.swiperefresh).setOnRefreshListener {
-            view.findViewById<ProgressBar>(R.id.progressHome).visibility=View.INVISIBLE
-            view.findViewById<TextView>(R.id.noInternetMsg)?.visibility=View.INVISIBLE
-            view. findViewById<TextView>(R.id.checkInternetMsg)?.visibility=View.INVISIBLE
-            view. findViewById<ImageView>(R.id.warningIcon)?.visibility=View.INVISIBLE
+            view.findViewById<ProgressBar>(R.id.progressHome).visibility=View.GONE
+            view.findViewById<TextView>(R.id.noInternetMsg)?.visibility=View.GONE
+            view. findViewById<TextView>(R.id.checkInternetMsg)?.visibility=View.GONE
+            view. findViewById<ImageView>(R.id.warningIcon)?.visibility=View.GONE
             view. findViewById<SwipeRefreshLayout>(R.id.swiperefresh).isRefreshing = true
             parentFragmentManager.beginTransaction().detach(this).commit()
             parentFragmentManager.beginTransaction().attach(this).commit()
-        }
+       }
     }
 
     override fun onResponse(@NonNull call: Call<HintsResults>,@NonNull response: Response<HintsResults>) {
-        view?.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)?.isRefreshing = false
+       view?.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)?.isRefreshing = false
         if (response.isSuccessful && response.body() != null) {
             val hindData:HintsResults = response.body()!!
             for(item in hindData.mResults!!){
@@ -138,12 +138,12 @@ class HomeFragment : Fragment(), Callback<HintsResults> {
                 }
             })
         }
-        view?.findViewById<ProgressBar>(R.id.progressHome)?.visibility=View.INVISIBLE
+        view?.findViewById<ProgressBar>(R.id.progressHome)?.visibility=View.GONE
     }
     override fun onFailure(@NonNull call: Call<HintsResults>,@NonNull t: Throwable) {
         view?.findViewById<SwipeRefreshLayout>(R.id.swiperefresh)?.isRefreshing = false
-        view?.findViewById<RecyclerView>(R.id.recyclerViewRecommendedRecipes)?.visibility=View.INVISIBLE
-        view?.findViewById<ProgressBar>(R.id.progressHome)?.visibility=View.INVISIBLE
+        view?.findViewById<RecyclerView>(R.id.recyclerViewRecommendedRecipes)?.visibility=View.GONE
+        view?.findViewById<ProgressBar>(R.id.progressHome)?.visibility=View.GONE
         view?.findViewById<TextView>(R.id.noInternetMsg)?.visibility=View.VISIBLE
         view?.findViewById<TextView>(R.id.checkInternetMsg)?.visibility=View.VISIBLE
         view?.findViewById<ImageView>(R.id.warningIcon)?.visibility=View.VISIBLE
