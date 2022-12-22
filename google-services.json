@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "473961299243",
+    "firebase_url": "https://pin-kuharica-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "pin-kuharica",
     "storage_bucket": "pin-kuharica.appspot.com"
   },
@@ -13,6 +14,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "473961299243-eg5ho02tupgd9s3e5rfciosreq28avr1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pma_kuharica",
+            "certificate_hash": "25c053d849a496ce8fa19e204b2f100bbe010d62"
+          }
+        },
+        {
+          "client_id": "473961299243-us8rvo6i3flf2thfko69o1uljgojsefc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pma_kuharica",
+            "certificate_hash": "f9947420f6aaa702bf0ee6076c7c5c99a3714e21"
+          }
+        },
         {
           "client_id": "473961299243-pm3ub9bqcg8rt0ecffpce23jch35p1ma.apps.googleusercontent.com",
           "client_type": 3
