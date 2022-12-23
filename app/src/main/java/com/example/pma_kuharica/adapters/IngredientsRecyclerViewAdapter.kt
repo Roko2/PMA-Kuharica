@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pma_kuharica.R
 import com.example.pma_kuharica.classes.*
 import com.example.pma_kuharica.fragments.BottomSheetFragment
+import com.example.pma_kuharica.fragments.RecipeQuantitySelect
 import com.example.pma_kuharica.interfaces.IngredientInterface
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
+import org.greenrobot.eventbus.EventBus
 import kotlin.collections.ArrayList
 
 class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompatActivity,listener:IngredientInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -37,8 +39,11 @@ class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompat
         holder.myFoodSearchName.text = food[position].food?.label
         holder.myCategorySearchName.text = food[position].food?.category
         holder.btnAddIngr.setOnClickListener {
-            Toast.makeText(context, "Ingredient is added", Toast.LENGTH_SHORT).show()
-            IngredientListener.GetIngredient(food[position].food!!)
+            val newFragment = RecipeQuantitySelect(food[position].measures,food[position].food?.label!!)
+            newFragment.show(context.supportFragmentManager, "measureDialog")
+            //listener iz dialoga na gumb add, takoder se vraca i podatak iz spinnera i tek onda ide dodavanje GetIngredient
+//            Toast.makeText(context, "Ingredient is added", Toast.LENGTH_SHORT).show()
+//            IngredientListener.GetIngredient(food[position].food!!)
         }
         if(food[position].food?.image.isNullOrEmpty()){
            holder.myFoodSearchImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_noimage))
