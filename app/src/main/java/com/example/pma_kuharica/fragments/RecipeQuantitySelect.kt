@@ -11,15 +11,22 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.example.pma_kuharica.R
 import com.example.pma_kuharica.classes.Measure
+import com.example.pma_kuharica.classes.Quantity
 import com.google.android.material.textfield.TextInputLayout
+import com.google.gson.Gson
+import java.io.Serializable
 
 
 class RecipeQuantitySelect(measures: ArrayList<Measure>?,foodName:String) : DialogFragment() {
     private val lMeasures = measures
     private val sFoodName = foodName
+    private var servingType:String = ""
+    private var foodWeight:String = ""
+    private var quantitySize:Number = 0
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(context)
         val inflater = requireActivity().layoutInflater;
@@ -27,6 +34,9 @@ class RecipeQuantitySelect(measures: ArrayList<Measure>?,foodName:String) : Dial
             // Add action buttons
             .setPositiveButton("Add",
                 DialogInterface.OnClickListener { dialog, id ->
+                    val gson = Gson()
+                    val result = Quantity(FoodName = sFoodName, ServingType = servingType, FoodWeight = foodWeight, QuantitySize = quantitySize)
+                    parentFragmentManager.setFragmentResult("requestKey",  bundleOf("bundleKey" to gson.toJson(result)))
                 })
             .setNegativeButton("Cancel",
                 DialogInterface.OnClickListener { dialog, id ->
@@ -50,10 +60,13 @@ class RecipeQuantitySelect(measures: ArrayList<Measure>?,foodName:String) : Dial
                 id: Long
             ) {
                 dialog.findViewById<TextView>(R.id.foodWeightInput).text = lMeasures!![position].weight.toString()
+                foodWeight = lMeasures[position].weight.toString()
+                servingType = lMeasures[position].label
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 dialog.findViewById<TextView>(R.id.foodWeightInput).text = lMeasures!![0].weight.toString()
+                servingType = lMeasures[0].label
             }
         }
         val stringValuedMeasures = ArrayList<String>()
@@ -78,9 +91,12 @@ class RecipeQuantitySelect(measures: ArrayList<Measure>?,foodName:String) : Dial
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
                     dialog.findViewById<TextInputLayout>(R.id.txtFoodQuantity)?.editText?.text.toString().trim()
                         .isNotEmpty()
+
+                if(dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled){
+                    quantitySize = dialog.findViewById<TextInputLayout>(R.id.txtFoodQuantity)?.editText?.text.toString().toInt()
+                }
             }
         })
-
     }
 }
 

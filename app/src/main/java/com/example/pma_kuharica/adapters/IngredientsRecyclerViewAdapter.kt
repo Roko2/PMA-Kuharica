@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pma_kuharica.R
 import com.example.pma_kuharica.classes.*
@@ -15,12 +16,14 @@ import com.example.pma_kuharica.fragments.RecipeQuantitySelect
 import com.example.pma_kuharica.interfaces.IngredientInterface
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import org.greenrobot.eventbus.EventBus
 import kotlin.collections.ArrayList
 
 class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompatActivity,listener:IngredientInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var food: ArrayList<Hint> = oFood
+    private val gson = Gson()
     private var oIngredients: MutableList<Food>?= mutableListOf()
     private var context:AppCompatActivity = context
     private var database:FirebaseDatabase= FirebaseDatabase.getInstance()
@@ -41,6 +44,10 @@ class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompat
         holder.btnAddIngr.setOnClickListener {
             val newFragment = RecipeQuantitySelect(food[position].measures,food[position].food?.label!!)
             newFragment.show(context.supportFragmentManager, "measureDialog")
+            newFragment.parentFragmentManager.setFragmentResultListener("requestKey", this.context) { key, bundle ->
+                val measureResult = bundle.getString("bundleKey")
+                val data:Quantity = gson.fromJson(measureResult,Quantity::class.java)
+            }
             //listener iz dialoga na gumb add, takoder se vraca i podatak iz spinnera i tek onda ide dodavanje GetIngredient
 //            Toast.makeText(context, "Ingredient is added", Toast.LENGTH_SHORT).show()
 //            IngredientListener.GetIngredient(food[position].food!!)
