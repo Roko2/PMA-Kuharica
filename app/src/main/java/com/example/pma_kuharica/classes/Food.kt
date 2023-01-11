@@ -17,5 +17,7 @@ data class Food(
     val label: String?="",
     @SerializedName("nutrients")
     var nutrients: Nutrients? = null,
-    @Transient var isFavorite: Boolean=false
+    @Transient var isFavorite: Boolean=false,
+    @SerializedName("quantity")
+    var quantity:Quantity? = null
 )

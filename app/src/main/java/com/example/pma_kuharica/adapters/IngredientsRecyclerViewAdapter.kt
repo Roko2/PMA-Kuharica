@@ -47,10 +47,10 @@ class IngredientsRecyclerViewAdapter (oFood: ArrayList<Hint>, context: AppCompat
             newFragment.parentFragmentManager.setFragmentResultListener("requestKey", this.context) { key, bundle ->
                 val measureResult = bundle.getString("bundleKey")
                 val data:Quantity = gson.fromJson(measureResult,Quantity::class.java)
+                food[position].food!!.quantity = data
+                IngredientListener.GetIngredient(food[position].food!!)
+                Toast.makeText(context, "Ingredient is added", Toast.LENGTH_SHORT).show()
             }
-            //listener iz dialoga na gumb add, takoder se vraca i podatak iz spinnera i tek onda ide dodavanje GetIngredient
-//            Toast.makeText(context, "Ingredient is added", Toast.LENGTH_SHORT).show()
-//            IngredientListener.GetIngredient(food[position].food!!)
         }
         if(food[position].food?.image.isNullOrEmpty()){
            holder.myFoodSearchImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_noimage))

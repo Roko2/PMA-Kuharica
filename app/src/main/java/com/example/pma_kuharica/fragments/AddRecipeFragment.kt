@@ -119,9 +119,19 @@ class AddRecipeFragment : Fragment(),RecipeInterface {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun doThis(intentServiceResult: IntentService) {
+        var recipeDesc:String=""
+        var it:Int = 0
         ingredientList.add(intentServiceResult.mResultValue!!)
         view?.findViewById<ProgressBar>(R.id.progress)?.visibility=View.VISIBLE
         view?.findViewById<TextView>(R.id.noIngrTxt)?.visibility=View.INVISIBLE
+        for (ingr in ingredientList){
+            recipeDesc += ingr.quantity!!.FoodName + "(" + ingr.quantity!!.ServingType + " " + ingr.quantity!!.FoodWeight + ") " + ingr.quantity!!.QuantitySize.toString() + "x"
+            if(ingredientList.size != 1 || it!=ingredientList.size) {
+                recipeDesc+="\n"
+            }
+            it++
+        }
+        view?.findViewById<TextInputLayout>(R.id.editTxtRecipeDesc)?.editText!!.setText(recipeDesc)
         mRecyclerView = view?.findViewById<View>(R.id.recyclerViewAddNewRecipe) as RecyclerView?
         mLayoutManager = LinearLayoutManager(context)
         mRecyclerView!!.layoutManager = mLayoutManager
