@@ -1,11 +1,16 @@
 package com.example.pma_kuharica.classes
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 data class Quantity(
-    val FoodName: String,
-    val ServingType: String,
-    val FoodWeight: String,
-    val QuantitySize: Number
-)
+    @SerializedName("foodName")
+    val FoodName: String? = "",
+    @SerializedName("servingType")
+    val ServingType: String?= "",
+    @SerializedName("foodWeight")
+    val FoodWeight: String? = "",
+    @SerializedName("quantitySize")
+    val QuantitySize: Int? = 0
+): Serializable

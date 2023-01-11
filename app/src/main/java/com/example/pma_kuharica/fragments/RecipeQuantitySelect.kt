@@ -26,7 +26,7 @@ class RecipeQuantitySelect(measures: ArrayList<Measure>?,foodName:String) : Dial
     private val sFoodName = foodName
     private var servingType:String = ""
     private var foodWeight:String = ""
-    private var quantitySize:Number = 0
+    private var quantitySize:Int = 0
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(context)
         val inflater = requireActivity().layoutInflater;
