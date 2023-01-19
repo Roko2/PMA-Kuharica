@@ -71,15 +71,17 @@ class RecipeQuantitySelect(measures: ArrayList<Measure>?,foodName:String) : Dial
         }
         val stringValuedMeasures = ArrayList<String>()
         if (lMeasures != null) {
-            for(ms in lMeasures){
-                stringValuedMeasures.add(ms.label)
+            for(ms in lMeasures) {
+                if (ms.label != null) {
+                    stringValuedMeasures.add(ms.label)
+                }
             }
         }
         val adapter = ArrayAdapter(requireContext(),
             android.R.layout.simple_spinner_dropdown_item, stringValuedMeasures.toTypedArray())
 
         spinner.adapter = adapter
-        dialog.findViewById<TextInputLayout>(R.id.txtFoodQuantity).editText?.addTextChangedListener(object : TextWatcher {
+        dialog.findViewById<TextInputLayout>(R.id.txtFoodQuantity).editText!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
 
             override fun beforeTextChanged(s: CharSequence, start: Int,
@@ -89,11 +91,11 @@ class RecipeQuantitySelect(measures: ArrayList<Measure>?,foodName:String) : Dial
             override fun onTextChanged(s: CharSequence, start: Int,
                                        before: Int, count: Int) {
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                    dialog.findViewById<TextInputLayout>(R.id.txtFoodQuantity)?.editText?.text.toString().trim()
+                    dialog.findViewById<TextInputLayout>(R.id.txtFoodQuantity).editText!!.text.toString().trim()
                         .isNotEmpty()
 
                 if(dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled){
-                    quantitySize = dialog.findViewById<TextInputLayout>(R.id.txtFoodQuantity)?.editText?.text.toString().toInt()
+                    quantitySize = dialog.findViewById<TextInputLayout>(R.id.txtFoodQuantity).editText!!.text.toString().toInt()
                 }
             }
         })
