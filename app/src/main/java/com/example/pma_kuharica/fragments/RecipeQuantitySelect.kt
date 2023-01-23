@@ -19,6 +19,7 @@ import com.example.pma_kuharica.classes.Quantity
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import java.io.Serializable
+import java.text.DecimalFormat
 
 
 class RecipeQuantitySelect(measures: ArrayList<Measure>?,foodName:String) : DialogFragment() {
@@ -26,7 +27,7 @@ class RecipeQuantitySelect(measures: ArrayList<Measure>?,foodName:String) : Dial
     private val sFoodName = foodName
     private var servingType:String = ""
     private var foodWeight:String = ""
-    private var quantitySize:Int = 0
+    private var quantitySize:Double? = 0.0
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(context)
         val inflater = requireActivity().layoutInflater;
@@ -95,7 +96,7 @@ class RecipeQuantitySelect(measures: ArrayList<Measure>?,foodName:String) : Dial
                         .isNotEmpty()
 
                 if(dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled){
-                    quantitySize = dialog.findViewById<TextInputLayout>(R.id.txtFoodQuantity).editText!!.text.toString().toInt()
+                    quantitySize = dialog.findViewById<TextInputLayout>(R.id.txtFoodQuantity).editText!!.text.toString().toDoubleOrNull()
                 }
             }
         })

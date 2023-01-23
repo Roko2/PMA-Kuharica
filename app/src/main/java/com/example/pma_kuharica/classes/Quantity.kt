@@ -12,5 +12,5 @@ data class Quantity(
     @SerializedName("foodWeight")
     val FoodWeight: String? = "",
     @SerializedName("quantitySize")
-    val QuantitySize: Int? = 0
+    val QuantitySize: Double? = 0.0
 ): Serializable
